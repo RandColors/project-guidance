@@ -1,3 +1,268 @@
+(
+~bpm = 120;
+~beatsPerBar = 4;
+~secondPerBar= (60/~bpm)*~beatsPerBar;
+"Bar Duration: ".post;~secondPerBar.postln;
+
+// Init metronomes
+
+// Metronomo base
+~metroBase = TempoClock.new;
+~metroBase.tempo = ~bpm/60;
+~metroBase.permanent_(true);
+~metroBase.schedAbs(~metroBase.nextBar,{~metroBase.beatsPerBar_(~beatsPerBar)});
+
+{
+// make new metronomes relative to the first one.
+	~metro = Array.fill(10,{arg i; TempoClock.new(~metroBase.tempo)});
+	~metro.put(0,TempoClock.new(~metroBase.tempo * 2.0));
+	~metro.put(1,TempoClock.new(~metroBase.tempo * 3.0));
+	~metro.put(2,TempoClock.new(~metroBase.tempo * 4.0));
+	~metro.put(3,TempoClock.new(~metroBase.tempo / 2.0));
+	~metro.put(4,TempoClock.new(~metroBase.tempo / 3.0));
+	~metro.put(5,TempoClock.new(~metroBase.tempo / 4.0));
+	~metro.put(6,TempoClock.new(~metroBase.tempo * 1.25));
+	~metro.put(7,TempoClock.new(~metroBase.tempo / 1.25));
+	~metro.put(8,TempoClock.new(~metroBase.tempo * 1.5));
+	~metro.put(9,TempoClock.new(~metroBase.tempo / 1.5));
+
+	~metro.do({arg item,i; item.schedAbs(item.nextBar,{item.beatsPerBar_(~metroBase.beatsPerBar  * (~metro[i].tempo/~metroBase.tempo))})});
+}.value;
+
+
+
+// Attivare e Disattivare Metronomo di Base e Metronomo1
+
+
+
+SynthDef(\bleep,{ arg out=0, note=60, amp=1.0;
+	var freq, env;
+	freq = note.midicps;
+	env = EnvGen.ar(Env([0,1,1,0],[0.01, 0.1, 0.2]),levelScale:amp, doneAction:2);
+	Out.ar(out,SinOsc.ar(freq) * env);
+}).add;
+
+
+
+~playMetroBase = Pbind(
+	\instrument, \bleep,
+	\note, Pseq((72!1)++(60!(~metroBase.beatsPerBar.asFloat-1)),inf),
+	\sustain, 1,
+	\dur, 1).play(~metroBase,quant:~metroBase.beatsPerBar);
+//~playMetroBase.stop;
+
+~playMetro1 = Pbind(
+	\instrument, \bleep,
+	\note, Pseq((75!1)++(63!(~metroBase.beatsPerBar.asFloat-1)),inf),
+	\sustain, 1,
+\dur, 1).play(~metro[1],quant:~metro[1].beatsPerBar);
+//~playMetro1.stop;
+)
+~playMetro1.stop;
+~playMetroBase.stop;
+
+// Test metro_N
+(
+"Beats per bar,
+~metroBase".postln;~metroBase.beatsPerBar.postln;
+"Beat next Bar, ~metroBase ".postln;~metroBase.nextBar.postln;
+
+"Beats per bar,
+~metro[0]".postln;~metro[0].beatsPerBar.postln;
+"Beat next Bar, ~metro[0] ".postln;~metro[0].nextBar.postln;
+
+"Beats per bar,
+~metro[1]".postln;~metro[1].beatsPerBar.postln;
+"Beat next Bar, ~metro[1] ".postln;~metro[1].nextBar.postln;
+)
+
+/*
+~noise = Buffer.readChannel(s,"C:/Program Files (x86)/Rob Papen/Punch/Samples/1 Loops/RP PinkNoise.wav", 0, -1, 0);
+SynthDef(\constQ, { |out=0, bufnum=0, amp=0.5, pan, centerPos=0.5, sustain=0.1,
+	rate=1, freq=400, rq=0.3|
+
+	var ringtime = (2.4 / (freq * rq) * 0.66).min(0.5); // estimated
+	var ampcomp = (rq ** -1) * (400 / freq ** 0.5);
+	var envSig = EnvGen.ar(Env([0, amp, 0], [0.5, 0.5] * sustain, \welch));
+	var cutoffEnv = EnvGen.kr(Env([1, 1, 0], [sustain+ringtime,0.01]), doneAction: 2);
+	var grain = PlayBuf.ar(1, bufnum, rate, 0,
+		centerPos - (sustain * rate * 0.5) * BufSampleRate.ir(bufnum),
+		1) * envSig;
+	var filtered = BPF.ar( grain, freq, rq, ampcomp );
+	OffsetOut.ar(out, Pan2.ar(filtered, pan, cutoffEnv))
+}, \ir.dup(8)).add;
+// Synth(\constQ, [\bufnum, ~noise, \amp, 0.8,\freq, exprand(700, 5000), \rq, exprand(0.01, 0.1), \sustain, 0.01]);
+
+
+// per fare Modulazioni, cambiare il metronomo di riferimento
+es: 8 giri completi delle lampadine, poi cambia rrand(2,6) con un'altro metro di riferimeto..
+
+
+ // slower drift
+Pbindef(\grillini,
+	\out,0,
+	\bufnum, ~noise,
+	\amp,0.4,
+	\freq, 115.midicps ,
+	\rq, 2,
+	\sustain, 0.0001,
+	\dur, 1/16 * Pbrown(0.6, 2.4, 0.2,inf)
+).play(~metroBase,quant:[0,0]);
+
+// brown acc/dec
+Pbindef(\grillini,
+		\out,0,
+		\bufnum, ~noise,
+		\amp,0.4,
+		\freq, 115.midicps ,
+		\rq, 2,
+		\sustain, 0.0001,
+\dur, Pstutter(Pwhite(2, 15),Pfunc({ exprand(0.01, 0.3) }),inf)
+).play(~metroBase,quant:[0,0]);
+
+Pbindef(\grilliniLoop,
+	    \instrument,\constQ,
+		\out,0,
+		\bufnum, ~noise,
+		\amp,106,
+		\freq, 115.midicps ,
+		\rq,  Pbrown(1.0, 2.0, 0.7),
+		\sustain, 0.0001,
+	\dur, 1/16 * Pbrown(0.6, 2.4, 0.2)).play(~metro[3],quant:[0,0]);
+Pbindef(\grilliniLoop).stop
+
+
+~grillini2 = {arg amp;
+d = Routine{
+	Pbindef(\grillini).stop;
+
+	Pbindef(\grillini,
+	\out, 0,
+	\bufnum, ~noise,
+	\amp,0.1,
+	\freq, 115.midicps ,
+	\rq, 2,
+	\sustain, 0.0001,
+		\dur, Pstutter(17, Pfunc({ exprand(0.005, 0.03)}))).play(~metroBase,quant:[0,0]);
+(~metro[6].tempo).wait; // durata della frase
+Pbindef(\grillini).stop;
+	};
+
+/////////// Singolini accumuli leggermente caotici
+Pbindef(\singolini,
+		\instrument,\constQ,
+		\out,0,
+		\freq, exprand(70, 80).midicps,
+		\dur, 1/16  * Pwhite(0.8, 14.2),
+		\rq, Pexprand(0.0001, 0.001),
+		\sustain, 0.0001 * Pwhite(0.1, 1),
+		\amp, Pwhite(3, 15.60)
+).play(~metroBase,quant:[0,0]);
+Pbindef(\singolini).stop;
+
+
+// slowing down
+Pbindef(\rallentini,
+	\instrument,\constQ,
+	\out,0,
+	\bufnum, ~noise,
+	\amp, 1,
+	\freq, [57.midicps,62.midicps],
+	\rq, 0.1,
+	\sustain, Pgeom(0.001, 0.75, 1+8.rand),
+	\dur, Pgeom(0.2, 1.3, 9)
+).play;
+Pbindef(\rallentini).stop;
+
+
+// è da usare assieme a rimbalzini
+Pbindef(\cassini1,
+		\instrument,\constQ,
+		\bufnum, ~noise,
+		\out,0,
+		\freq, [35.midicps,27.midicps],
+		\dur, 1/16 *Pwhite(0.8, 14.2),
+		\rq,0.01,
+		\sustain, 0.0001 * Pwhite(0.1, 1),
+		\amp, Pwhite(1, 12)
+).play(~metroBase,quant:[0,0]);
+//(~metro[5].tempo).wait; // durata della frase
+
+Pbindef(\rimbalzini,
+		\instrument,\constQ,
+		\out,0,
+		\freq, exprand(700, 5000),
+		\dur, 1/16  * Pwhite(0.8, 14.2),
+		\rq, 0.02 * Pwhite(0.2, 6.0),
+		\sustain, 0.0001 * Pwhite(0.1, 4),
+		\amp, Pwhite(1, 5.60)
+).play(~metroBase,quant:[0,0]);
+
+Pbindef(\rimbalzini1,
+		\instrument,\constQ,
+		\out,0,
+		\freq, exprand(700, 5000),
+		\dur, 1/16  * Pwhite(0.8, 14.2),
+		\rq, 0.02 * Pwhite(0.2, 6.0),
+		\sustain, 0.0001 * Pwhite(0.1, 4),
+		\amp, Pwhite(1, 12)
+).play(~metroBase,quant:[0,0]);
+
+
+///////////////////RimbalziniComp
+// perchè non va ???
+
+
+Pbindef(\rimbalziniComp,
+		\instrument,\constQ,
+\bufnum, ~noise,
+		\out,0,
+		\freq, exprand(700, 5000),
+		\dur, 1/16  * Pwhite(0.8, 14.2),
+		\rq, 0.02 * Pwhite(0.2, 6.0),
+		\sustain, 0.0001 * Pwhite(0.1, 4),
+		\amp, Pwhite(1, 5.60)
+).play(~metroBase,quant:[0,0]);
+Pbindef(\rimbalziniComp).stop;
+
+Pbindef(\rimbalzni2Comp,
+	\instrument,\constQ,
+	\out,0,
+	\bufnum, ~noise,
+	\freq, [57.midicps,62.midicps],
+	\dur, 1/16  * Pwhite(0.8, 24.2),
+	\rq, 0.2 * Pwhite(0.2, 1.0),
+	\sustain, 0.0001 * Pwhite(0.1, 2),
+	\amp, Pwhite(0.1, 4.0)
+).play(~metroBase,quant:[0,0]);
+Pbindef(\rimbalzni2Comp).stop;
+
+Pbindef(\rimbalzni3Comp,
+	\instrument,\constQ,
+	\out,0,
+	\bufnum, ~noise,
+	\freq, [50.midicps,62.midicps],
+	\dur, 1/16  * Pwhite(0.8, 24.2),
+	\rq, 0.2 * Pwhite(0.2, 1.0),
+	\sustain, 0.0001 * Pwhite(0.1, 2),
+	\amp, Pwhite(0.1, 4.0)
+).play(~metroBase,quant:[0,0]);
+Pbindef(\rimbalzni3Comp).stop;
+
+Pbindef(\singoliniComp,
+		\instrument,\constQ,
+		\out,0,
+		\freq, exprand(50, 80).midicps,
+		\dur, 1/16  * Pwhite(0.8, 14.2),
+		\rq, Pexprand(0.0001, 0.1),
+		\sustain, 0.0001 * Pwhite(0.1, 1),
+		\amp, Pwhite(1, 15.60)
+).play(~metroBase,quant:[0,0]);
+Pbindef(\singoliniComp).stop;
+
+~composito = [Pbindef(\rimbalziniComp),Pbindef(\rimbalzni2Comp),Pbindef(\rimbalzni3Comp),Pbindef(\singoliniComp)];
+
+
 // Post the number of output channels
 https://scsynth.org/t/discretize-sendcollection/1144/2
 s.boot;
@@ -814,4 +1079,4 @@ f.value(12);  // prints 2
 
 f.value;   // prints 1
 
-f.value(nil);  // prints nil
+f.value(nil);  // prints nil*/
