@@ -25,18 +25,13 @@ int DMXPRO_BAUDRATE=115000;
 
 void setup(){
   size(400, 66);
-  
+
   osc = new OscP5(this, 12321);
   sc = new NetAddress("127.0.0.1", 57120);
-  
+
   // PLUGS
-  osc.plug(this, "newamp1", "/amp1"); 
-  osc.plug(this, "newamp2", "/amp2"); 
-  osc.plug(this, "newamp3", "/amp3"); 
-  osc.plug(this, "newamp4", "/amp4"); 
-  osc.plug(this, "newamp5", "/amp5"); 
-  osc.plug(this, "newamp6", "/amp6"); 
-  
+  osc.plug(this, "newamps", "/amps");
+
   //DMX
   dmxOutput=new DmxP512(this, universeSize, false);
 
@@ -52,34 +47,19 @@ void setup(){
 
 void draw(){
   //background(0);
-  
+
   //fai la richiesta di dati a frameRate con .send
-  OscMessage msg1 = new OscMessage("/getamp1");
-  osc.send(msg1, sc);
-  
-  OscMessage msg2 = new OscMessage("/getamp2");
-  osc.send(msg2, sc);
-  
-  OscMessage msg3 = new OscMessage("/getamp3");
-  osc.send(msg3, sc);
-  
-  OscMessage msg4 = new OscMessage("/getamp4");
-  osc.send(msg4, sc);
-  
-  OscMessage msg5 = new OscMessage("/getamp5");
-  osc.send(msg5, sc);
-  
-  OscMessage msg6 = new OscMessage("/getamp6");
-  osc.send(msg6, sc);
-  
+  OscMessage msg = new OscMessage("/getAmps");
+  osc.send(msg, sc);
+
  // UI
- noStroke(); 
-  
+ noStroke();
+
         // channel 1
    fill(153,255*amp1,0);
    rect(0,0,width/6,height*amp1);
    dmxOutput.set(1, int(amp1*255.0));
-  
+
        // channel 2
    fill(153,255*amp2,0);
    rect(66,0,width/6,height*amp2);
@@ -89,52 +69,25 @@ void draw(){
    fill(153,255*amp3,0);
    rect(132,0,width/6,height*amp3);
    dmxOutput.set(3, int(amp3*255.0));
-   
+
            // channel 4
    fill(153,255*amp4,0);
    rect(198,0,width/6,height*amp4);
    dmxOutput.set(4, int(amp4*255.0));
-    
+
            // channel 5
    fill(153,255*amp5,0);
    rect(264,0,width/6,height*amp5);
    dmxOutput.set(5, int(amp5*255.0));
-   
+
            // channel 6
    fill(153,255*amp6,0);
    rect(330,0,width/6,height*amp6);
    dmxOutput.set(6, int(amp6*255.0));
 }
 
-
-
-// funcctions  to get the data and send them to the proper place.
-void newamp1(float rms){
-   amp1 = rms;
-   println(amp1);
-}
-
-void newamp2(float rms){
-   amp2 = rms;
-  // println(amp2);
-}
-
-void newamp3(float rms){
-   amp3 = rms;
-  // println(amp3);
-}
-
-void newamp4(float rms){
-   amp4 = rms;
-  // println(amp4);
-}
-
-void newamp5(float rms){
-   amp5 = rms;
-  // println(amp5);
-}
-
-void newamp6(float rms){
-   amp6 = rms;
-  // println(amp6);
+// funcction  to get the data and send them to the proper place.
+void newamps(float rms1, float rms2, float rms3, float rms4, float rms5, float rms6){
+   amp1 = rms1; amp2 = rms2; amp3 = rms3; amp4 = rms4; amp5 = rms5; amp6 = rms6;
+   println("[",amp1,amp2,amp3,amp4,amp5,amp6,"]");
 }
