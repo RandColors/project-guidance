@@ -32,50 +32,6 @@
 
 
 // Attivare e Disattivare Metronomo di Base e Metronomo1
-
-
-
-SynthDef(\bleep,{ arg out=0, note=60, amp=1.0;
-	var freq, env;
-	freq = note.midicps;
-	env = EnvGen.ar(Env([0,1,1,0],[0.01, 0.1, 0.2]),levelScale:amp, doneAction:2);
-	Out.ar(out,SinOsc.ar(freq) * env);
-}).add;
-
-
-
-~playMetroBase = Pbind(
-	\instrument, \bleep,
-	\note, Pseq((72!1)++(60!(~metroBase.beatsPerBar.asFloat-1)),inf),
-	\sustain, 1,
-	\dur, 1).play(~metroBase,quant:~metroBase.beatsPerBar);
-//~playMetroBase.stop;
-
-~playMetro1 = Pbind(
-	\instrument, \bleep,
-	\note, Pseq((75!1)++(63!(~metroBase.beatsPerBar.asFloat-1)),inf),
-	\sustain, 1,
-\dur, 1).play(~metro[1],quant:~metro[1].beatsPerBar);
-//~playMetro1.stop;
-)
-~playMetro1.stop;
-~playMetroBase.stop;
-
-// Test metro_N
-(
-"Beats per bar,
-~metroBase".postln;~metroBase.beatsPerBar.postln;
-"Beat next Bar, ~metroBase ".postln;~metroBase.nextBar.postln;
-
-"Beats per bar,
-~metro[0]".postln;~metro[0].beatsPerBar.postln;
-"Beat next Bar, ~metro[0] ".postln;~metro[0].nextBar.postln;
-
-"Beats per bar,
-~metro[1]".postln;~metro[1].beatsPerBar.postln;
-"Beat next Bar, ~metro[1] ".postln;~metro[1].nextBar.postln;
-)
-
 /*
 ~noise = Buffer.readChannel(s,"C:/Program Files (x86)/Rob Papen/Punch/Samples/1 Loops/RP PinkNoise.wav", 0, -1, 0);
 SynthDef(\constQ, { |out=0, bufnum=0, amp=0.5, pan, centerPos=0.5, sustain=0.1,
@@ -339,13 +295,6 @@ Soluzione 1 a 1
 2 busses - 2 anlaizzatori - 2 out - 2 messaggi
 */
 
-~bus0 = Bus.control(s,1);
-~bus1 = Bus.control(s,1);
-~bus2 = Bus.control(s,1);
-~bus3 = Bus.control(s,1);
-~bus4 = Bus.control(s,1);
-~bus5 = Bus.control(s,1);
-
 
 (
 ~playMetroBase.stop;
@@ -357,49 +306,6 @@ Soluzione 1 a 1
 ~playMetroBase.play(~metroBase,quant:~metroBase.beatsPerBar);
 ~forkSendDati.reset.play;
 )
-
-
-(
-~forkSendDati = {
-
-loop{
-		// UNO
-OSCdef(\getamp1,{
-	~n1.sendMsg('/amp1',~bus0.getSynchronous.asFloat);
-				}, "/getamp1");
-		// DUE
-	OSCdef(\getamp2,{
-    ~n1.sendMsg('/amp2',~bus1.getSynchronous.asFloat);
-	}, "/getamp2");
-
-		// TRE
-OSCdef(\getamp3,{
-	~n1.sendMsg('/amp3',~bus2.getSynchronous.asFloat);
-				}, "/getamp3");
-
-		// QUATTRO
-OSCdef(\getamp4,{
-	~n1.sendMsg('/amp4',~bus3.getSynchronous.asFloat);
-				}, "/getamp4");
-
-			// CINQUE
-OSCdef(\getamp5,{
-	~n1.sendMsg('/amp5',~bus4.getSynchronous.asFloat);
-				}, "/getamp5");
-
-			// SEI
-OSCdef(\getamp6,{
-	~n1.sendMsg('/amp6',~bus5.getSynchronous.asFloat);
-				}, "/getamp6");
-
-	0.01.wait;
-	}
-
-}.fork;
-)
-
-~forkSendDati.reset.play;
-~forkSendDati.stop;   // come pause
 
 
 // Un segnale audio che viene analizzato e sparato fuori da uno dei BUS
