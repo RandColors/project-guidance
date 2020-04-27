@@ -14,6 +14,20 @@ clicks:
 
 */
 
+
+/*
+TO DO, maybe not everything.. but .
+
+Apply advanced rhythmic stuffs
+Tuplets (triplets, quintuplets, septuplets)
+Changing time signature within a piece:
+Moving from simple to compound (e.g. 2/4 to 6/8)
+Changing number of beats in the bar (e.g. 4/4 to 3/4)
+Advanced rhythmic devices, to include polyrhythms, polymeter, polytempo
+Tempo curves (speeding up or slowing down)
+*/
+
+
 ~metro = ~metro ? ();
 
 ~metro.use{
