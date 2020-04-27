@@ -10,5 +10,5 @@ SynthDef(\bleep,{ arg out=0, freq=440, amp=1.0;
 SynthDef(\DcOuts){|durSeconds=1, amp=1, bus=0|
     var env = \env.kr(Env.newClear(8).asArray);
     var sig = EnvGen.kr(env, timeScale:durSeconds.poll, doneAction:2) * amp;
-    Out.kr(bus, sig)
-}.add
+    Out.kr(bus, sig);
+}.add;

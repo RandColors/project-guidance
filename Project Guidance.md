@@ -1,3 +1,120 @@
+Video Cuts Analysis
+The goal is to take inspirations from this video, 
+I edited it to try to better analyze what is going on about the light design.
+Anyway, I have to rearrange the sequences for my setup that is made of 6 lights.
+If you like to try by yourself you could run the processingOSCnodimmer
+
+
+
+
+Time stamps youtube:
+
+https://youtu.be/AEpn6HvQSKg
+
+I'm looking only at the bottom row I can reproduce just one row with my 6 lights 
+- Env perc long atk .. 
+something like that:
+[Env.perc(0.899,0.101,1,-2)].plot;
+
+- seq first element last element and so on 
+
+    (
+    var n_times = 1;
+    Pbindef(\ph0,
+    \instrument, \DcOuts,
+    	\stretch,4,
+    \bus,Pseq([0,5,1,4,2,3],n_times) + ~lightsBus.index,
+    \amp,1,
+    \env, Pseq([
+    [Env.perc(0.999,0.001,1,-2)]
+    ],inf),
+    	\dur, Pseq((1/2!2)++(1/4!5),inf),
+    \finish, ~beatsToSeconds
+    ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+    )
+    
+    // Find a better way to tell how many times a ph has to be repeated
+    (
+    var n_times = 4;
+    Pbindef(\ph0,
+    	\bus,Pseq([0,5,1,4,2,3],n_times) + ~lightsBus.index,
+    	\dur, Pseq([1/16],inf)
+    ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+    )
+    
+    
+    Pbindef(\ph0).stop
+    Pbindef(\ph0).clear
+    
+    
+https://youtu.be/AEpn6HvQSKg?t=4
+
+(
+[Env.perc(0.999,0.001,1,2)].plot(name:"first");
+[Env.perc(0.001,0.999,1,1)].plot(name:"second");
+)
+
+(
+Pbindef(\ph1,
+    \instrument, \DcOuts,
+	\stretch,4,
+    \bus,Pseq([(0..2),(3..5)],inf) + ~lightsBus.index,
+    \amp,1,
+    \env, Pseq([
+		[Env.perc(0.9999,0.0001,1,2)],
+		[Env.perc(0.0001,0.9999,1,1)]
+    ],inf),
+	\dur, Pseq([1, 1/4],inf),
+    \finish, ~beatsToSeconds
+).play(~metro.base ,quant:~metro.base.beatsPerBar);
+)
+
+Pbindef(\ph1,\dur, Pseq([1/4],inf)).play(~metro.base ,quant:~metro.base.beatsPerBar);
+
+Pbindef(\ph1).stop
+Pbindef(\ph1).clear
+
+
+/* It's just an idea I added .. 
+- growing in brightness over time eg: 1bar ,
+- alternating sequence A-B
+*/
+
+(
+Pbindef(\ph2,
+    \instrument, \DcOuts,
+	\legato,1,
+	\stretch,4,
+    \bus,Pseq([(0..2),(3..5)],inf)+ ~lightsBus.index,
+	\amp, Pn(Pseries(0.25,0.01171875,64),inf),
+    \env, Pseq([ [Env.new([0,1,1,0],[0.0,1.0,0.0], 'lin')]],inf),
+	\dur, Pseq([1/16],inf),
+    \finish, ~beatsToSeconds
+).play(~metro.base ,quant:~metro.base.beatsPerBar);
+)
+
+
+(
+
+Pbindef(\ph2, \dur, Pseq([1/2],inf),
+	\amp, Pn(Pseries(0.25,0.09375 ,8),inf),
+).play(~metro.base ,quant:~metro.base.beatsPerBar);
+)
+
+(
+Pbindef(\ph2, \dur, Pseq([1/4],inf),
+	\amp, Pn(Pseries(0.25,0.046875,16),inf),
+).play(~metro.base ,quant:~metro.base.beatsPerBar);
+)
+
+Pbindef(\ph2).stop;
+Pbindef(\ph2).clear;
+
+// Similar Idea, group of 2 or 3 contiguous lights
+
+
+
+https://youtu.be/AEpn6HvQSKg?t=8
 
 
 # Project Guidance #

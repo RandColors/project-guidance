@@ -1,3 +1,7 @@
+/* TODO
+look at “phrase networks”: save using dictionaries and then use pbind to recall/structure ..
+*/
+
 (
 s.waitForBoot{
     [
@@ -7,6 +11,9 @@ s.waitForBoot{
         "metro.scd",
     ]
     .do(_.loadRelative);
+
+	s.plotTree;
+	s.meter;
 }
 )
 
@@ -15,4 +22,6 @@ OSCdef(\processing).disable // pause
 OSCdef(\processing).enable // resume
 
 // set tempo
-~metro.setBpm(60)
+~metro.setBpm(60);
+
+s.scope
