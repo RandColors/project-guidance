@@ -6,9 +6,23 @@ SynthDef(\bleep,{ arg out=0, freq=440, amp=1.0;
     Out.ar(out, SinOsc.ar(freq) * env);
 }).add;
 
-// for lights
-SynthDef(\DcOuts){|durSeconds=1, amp=1, bus=0|
+
+// straight forward amp-to-bus
+SynthDef(\ampControl){|out=0, lag=0.1| Out.kr(out, \amp.kr(0,lag))}.add;
+
+// allocate busses for dynamics
+~dynamics = Bus.control(s, 10) // let's say 10 independent controls
+~dynamics.setn(1!10)
+~dynamics.scope
+
+
+// add \amp arg to DcOuts
+SynthDef(\DcOuts){|durSeconds=1, bus=0, amp|
     var env = \env.kr(Env.newClear(8).asArray);
-    var sig = EnvGen.kr(env, timeScale:durSeconds.poll, doneAction:2) * amp;
-    Out.kr(bus, sig);
+    var sig = EnvGen.kr(env, timeScale:durSeconds, doneAction:2);
+    Out.kr(bus, sig*amp);
 }.add;
+
+
+
+

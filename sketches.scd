@@ -84,9 +84,10 @@ write it in the new way.
 (
 Pbindef(\frase,
     \instrument, \DcOuts,
+	\legato,1,
 	\stretch,4,
     \bus,Pseq([(0..5)],inf) + ~lightsBus.index,
-    \amp,1,
+	\amp,1,
     \env, Pseq([
         [Env.perc],
         [Env.perc(0.999,0.001,1,4)]
@@ -94,6 +95,16 @@ Pbindef(\frase,
     \dur, Pseq([1,0.5,0.5,0.25,0.25],inf),
     \finish, ~beatsToSeconds
 ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+)
+
+// start a crescendo   \amp, ~dynamics.subBus(0).asMap,
+Pmono(\ampControl,
+	\stretch,4,
+	\legato,1,
+    \out, ~dynamics.subBus(0),
+    \amp, Pseg([0,3,0],[9,1],4,1),
+    \dur, 0.01
+).play
 )
 
 Pbindef(\frase).stop
@@ -106,15 +117,46 @@ Ndef(\monitor){
 }.play
 
 
+
+// launch a pattern, reading amp from ~dynamics
+(
+
+
+ ~ph0func = { arg n;
+Pbindef(\frase,
+    \instrument, \DcOuts,
+    \bus, Pseq([(0..5)],n_times) + ~lightsBus.index,
+    \amp, ~dynamics.subBus(0).asMap,
+    \env, Pseq([
+        [Env.perc],
+        [Env.perc(0.999,0.001,1,4)]
+    ],inf),
+    \stretch,1,
+    \dur, Pseq([1,0.5,0.5,0.25,0.25],inf),
+).play;
+
+// Pseg(levels:[0,1],durs:[4],curves:4,repeats:1),
+Pmono(\ampControl,
+	\stretch,4,
+	\legato,1,
+    \out, ~dynamics.subBus(0),
+    \amp, Pseg(levels:[1,1],durs:[1],curves:4,repeats:1),
+).play;
+)
+
+
+
+
 /*
 write a set of phrases that u can consider like: "default"
 */
 
 
-(
+/*(
 Pbindef(\forward,
     \instrument, \DcOuts,
 	\stretch,4,
+	\legato,1,
     \bus,Pseq((0..5),inf) + ~lightsBus.index,
     \amp,1,
     \env, Pseq([
@@ -130,14 +172,48 @@ Pbindef(\forward,\dur, Pseq([1/8],inf)).play(~metro.base ,quant:[~metro.base.tim
 Pbindef(\forward,\dur, Pseq((1/8!9)++(1/4!3),inf)).play(~metro.base ,quant:[~metro.base.timeToNextBeat,0]);
 
 Pbindef(\forward).stop;
-Pbindef(\forward).clear;
+Pbindef(\forward).clear;*/
 
+
+(
+~ph_forward = { arg n;
+Pbindef(\forward,
+    \instrument, \DcOuts,
+	\stretch,4,
+	\legato,1,
+    \bus,Pseq((0..5),n) + ~lightsBus.index,
+    \amp, ~dynamics.subBus(0).asMap,
+    \env, Pseq([
+		[Env.perc(0.001,0.999,1,4)]
+    ],inf),
+	\dur, Pseq([1/4],inf),
+    \finish, ~beatsToSeconds
+).play(~metro.base ,quant:~metro.base.beatsPerBar);
+};
+
+// Pseg(levels:[0,1],durs:[4],curves:4,repeats:1),
+Pmono(\ampControl,
+	\stretch,4,
+	\legato,1,
+    \out, ~dynamics.subBus(0),
+    \amp, Pseg(levels:[1,1],durs:[1],curves:4,repeats:1), // set Crescendo and or Diminuendo if needed
+).play(~metro.base ,quant:~metro.base.beatsPerBar);
+)
+
+~ph_forward.value(1);
+
+Pbindef(\forward,\dur, Pseq([1/8],inf)).play(~metro.base ,quant:[~metro.base.timeToNextBeat,0]);
+Pbindef(\forward,\dur, Pseq((1/8!9)++(1/4!3),inf)).play(~metro.base ,quant:[~metro.base.timeToNextBeat,0]);
+
+Pbindef(\forward).stop;
+Pbindef(\forward).clear;
 
 
 (
 Pbindef(\reverse,
     \instrument, \DcOuts,
 	\stretch,4,
+	\legato,1,
     \bus,Pseq((0..5).reverse,inf) + ~lightsBus.index,
     \amp,1,
     \env, Pseq([
@@ -161,6 +237,7 @@ Pbindef(\reverse).clear;
 Pbindef(\palindromo,
     \instrument, \DcOuts,
 	\stretch,4,
+	\legato,1,
     \bus,Pseq((0..5).mirror1,inf) + ~lightsBus.index,
     \amp,1,
     \env, Pseq([
@@ -183,6 +260,7 @@ Pbindef(\palindromo).clear;
 // a rand seq repeted over and over
 Pbindef(\scramble,
     \instrument, \DcOuts,
+	\legato,1,
 	\stretch,4,
     \bus,Pseq((0..5).scramble,inf) + ~lightsBus.index,
     \amp,1,
@@ -206,6 +284,7 @@ Pbindef(\scramble).clear;
 (
 Pbindef(\tutti,
     \instrument, \DcOuts,
+	\legato,1,
 	\stretch,4,
     \bus,Pseq([(0..5)],inf) + ~lightsBus.index,
     \amp,1,
@@ -336,7 +415,7 @@ we can start from something that is visible i the light like ..
 
 */
 
-
+Env.perc(0.001,0.999,1,8).plot;
 
 (
 Pbindef(\ph2,
@@ -404,7 +483,6 @@ Pbindef(\ph3_grp2, \dur, Pseq([1],inf),
 
 Pbindef(\ph3_grp2).stop
 Pbindef(\ph3_grp2).clear
-
 
 (
 Pbindef(\ph3_grp3,
