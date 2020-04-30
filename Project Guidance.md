@@ -5,6 +5,7 @@ I edited it to try to better understand what's going on about the light design.
 By the way, I have to rearrange the sequences for my setup that is made of 6 lights so this is just my interpretation, it's not intended to be a true analysis. 
 If you like to try by yourself you could run the processingOSCnodimmer to visualize the envelopes/animations.
     
+
     import oscP5.*;
     import netP5.*;
     
@@ -14,7 +15,7 @@ If you like to try by yourself you could run the processingOSCnodimmer to visual
     float amp1,amp2,amp3,amp4,amp5,amp6;
     
     void setup(){
-      size(400, 66);
+      size(420, 66);
     
       osc = new OscP5(this, 12321);
       sc = new NetAddress("127.0.0.1", 57120);
@@ -29,38 +30,37 @@ If you like to try by yourself you could run the processingOSCnodimmer to visual
     void draw(){
       background(0);
     
-      //fai la richiesta di dati a frameRate con .send
+      //ask data at frameRate with .send
       OscMessage msg = new OscMessage("/getAmps");
       osc.send(msg, sc);
     
      // UI
      noStroke();
     
-    // channel 1
-       fill(153,255*amp1,0);
-       rect(0,0,width/6,height*amp1);
+     // channel 1
+      fill(153, 255*amp1, 0);
+      rect(0, 0, width/6, height*amp1);
     
-       // channel 2
-       fill(153,255*amp2,0);
-       rect(66,0,width/6,height*amp2);
-    
-    // channel 3
-       fill(153,255*amp3,0);
-       rect(132,0,width/6,height*amp3);
-       
-       // channel 4
-       fill(153,255*amp4,0);
-       rect(198,0,width/6,height*amp4);
+      // channel 2
       
+      fill(153, 255*amp2, 0);
+      rect(70, 0, width/6, height*amp2);
     
-       // channel 5
-       fill(153,255*amp5,0);
-       rect(264,0,width/6,height*amp5);
+      // channel 3
+      fill(153, 255*amp3, 0);
+      rect(140, 0, width/6, height*amp3);
     
+      // channel 4
+      fill(153, 255*amp4, 0);
+      rect(210, 0, width/6, height*amp4);
     
-       // channel 6
-       fill(153,255*amp6,0);
-       rect(330,0,width/6,height*amp6);
+      // channel 5
+      fill(153, 255*amp5, 0);
+      rect(280, 0, width/6, height*amp5);
+    
+      // channel 6
+      fill(153, 255*amp6, 0);
+      rect(350, 0, width/6, height*amp6);
     
     }
     
@@ -71,12 +71,16 @@ If you like to try by yourself you could run the processingOSCnodimmer to visual
     }
     
 
-If you then need to use it with a dimmer just go on github and run the "ProcessingOSC" file.
+Then if you need to use it with a   dimmer just go on github https://github.com/RandColors/project-guidance/tree/master/ProcessingOSC and run the "ProcessingOSC.pde" file in Processing
+https://processing.org/
 
 in SC: 
 Run 
 - setup.scd
 - sketches.scd
+
+
+
 
 
 ## first things first, default phrases: ##
@@ -141,7 +145,7 @@ Run
     
     
     (
-    // a rand seq repeted over and over
+    // a scrambled array sequenced,  repeted over and over
     Pbindef(\scramble,
     \instrument, \DcOuts,
     	\legato,1,
@@ -180,6 +184,25 @@ Run
     
     Pbindef(\tutti).stop
     Pbindef(\tutti).clear
+
+	//Returns all possible combinations of the array's elements.
+	(
+	Pbindef(\powerset,
+    \instrument, \DcOuts,
+	\legato,1,
+	\stretch,4,
+	\bus,Pseq((0..5).powerset.sort({ |a, b| a.size > b.size }).reverse,inf)+ ~lightsBus.index,
+	\amp, 1,
+    \env, Pseq([
+		[Env.perc(0.001,0.999,1,-4)]
+    ],inf),
+	\dur, Pseq([1/16],inf),
+    \finish, ~beatsToSeconds
+	).play(~metro.base ,quant:~metro.base.beatsPerBar);
+	)
+
+	Pbindef(\powerset).stop;
+	Pbindef(\powerset).clear
     
 
 
@@ -255,26 +278,29 @@ https://youtu.be/AEpn6HvQSKg?t=4
 
 
 /* 
-It's just an idea I added .. 
+I just some ideas .. little divagation.. 
+
 - growing in brightness over time eg: 1bar ,
 - keeping the rhythmic alternating sequence "A-B"  
 A = (0..2)
 B = (3..5)
 
-you have to add  \amp, ~dynamics.subBus(0).asMap,
+you have to change  \amp, ~dynamics.subBus(0).asMap,
+
+and add the Pmono  
 
 Pmono(\ampControl,
 	\stretch,4,
 	\legato,1,
     \out, ~dynamics.subBus(0),
-    \amp, Pseg(levels:[1,1],durs:[1],curves:4,repeats:1),
+    \amp, Pseg(levels:[0,1],durs:[10],curves:4,repeats:1),
 ).play;
 
 */
 
 (
 Pbindef(\ph2,
-    \instrument, \DcOuts,
+    \instrument, \DcOut,
 	\legato,1,
 	\stretch,4,
     \bus,Pseq([(0..2),(3..5)],inf)+ ~lightsBus.index,
@@ -294,7 +320,7 @@ Pmono(\ampControl,
 
 
 
-// Similar Idea, group of 2 or 3 contiguous lights, 
+// Similar Idea, Group of  2 contiguous lights.
 (
 Pbindef(\ph3_grp2,
     \instrument, \DcOuts,
@@ -315,8 +341,7 @@ Pbindef(\ph3_grp2,
 Pbindef(\ph3_grp2).stop
 Pbindef(\ph3_grp2).clear
 
-
-
+// Group of  3 contiguous lights
 (
 Pbindef(\ph3_grp3,
     \instrument, \DcOuts,
@@ -339,6 +364,7 @@ Pbindef(\ph3_grp3).stop;
 Pbindef(\ph3_grp3).clear;
 
 
+// Group of  2 non contiguous lights
 (
 Pbindef(\ph3_grp4,
     \instrument, \DcOuts,
@@ -360,7 +386,6 @@ Pbindef(\ph3_grp4).clear;
 
 
 // sequence of envelopes 
-
 (
 Pbindef(\ph4_,
     \instrument, \DcOuts,
@@ -410,12 +435,47 @@ https://youtu.be/AEpn6HvQSKg?t=8
 My reinterpretation is first- random - last fast envelope 1/0 . 
 \env, Pseq([ [Env.new([0,1,1,0],[0.0,1.0,0.0], 'lin')]],inf),
 
+ Pbindef(\firstRandlast,
+    \instrument, \DcOuts,
+    	\stretch,4,
+    	\legato,1,
+    \bus,Pseq((0..5),inf) + ~lightsBus.index,
+    \amp,1,
+    \env, Pseq([
+    		[Env.perc(0.001,0.999,1,4)]
+    ],inf),
+    	\dur, Pseq([1/4],inf),
+    \finish, ~beatsToSeconds
+    ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+    )
+    
+    
+    Pbindef(\forward).stop;
+    Pbindef(\forward).clear;
+
 
 https://youtu.be/AEpn6HvQSKg?t=11
 tutti 
 env perc log 
 Env.perc(0.001,0.999,1,8).plot;
-
+    
+    (
+    Pbindef(\tutti,
+    \instrument, \DcOuts,
+    	\legato,1,
+    	\stretch,4,
+    \bus,Pseq([(0..5)],inf) + ~lightsBus.index,
+    \amp,1,
+    \env, Pseq([
+    		[Env.perc(0.001,0.999,1,8)]
+    ],inf),
+    	\dur, Pseq([2],inf),
+    \finish, ~beatsToSeconds
+    ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+    )
+    
+    Pbindef(\tutti).stop
+    Pbindef(\tutti).clear
 
 
 https://youtu.be/AEpn6HvQSKg?t=13
@@ -426,6 +486,9 @@ https://doc.sccode.org/Classes/Dictionary.html
 
 
 last to first adjacent couple - single -  non adj couple
+
+
+
 
 couple from first to last
 

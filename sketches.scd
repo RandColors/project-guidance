@@ -5,9 +5,9 @@
 
 /* TO DO/ TO UNDERSTAND
 
-Add n_times = I mean how many times a seq has to be repeated
+Add n_times = I mean how many times a seq can be repeated
 make everything inside a a dictionary, maybe you should put eery pattern in a function with n_times, metronomes sequences..
-Change the SynthDef adding another envelope that is for crescendos etc, so long envelope over the pattern
+Change the SynthDef adding another envelope that is for crescendos etc, long envelopes over the pattern
 How to change metro.beat?
 How to quant to next bar? quant:[~metro.base.timeToNextBeat,0]
 How to add a GUI for the env where it's possible to change dynamically the curves
@@ -80,6 +80,11 @@ write it in the new way.
 // - dur: expressed in beats, converted later
 // - finish: here we call our conversion function
 
+/*
+(
+r = Routine({
+
+	~lightsAddr.sendMsg("/startrec","startrec".postln);
 
 (
 Pbindef(\frase,
@@ -92,10 +97,44 @@ Pbindef(\frase,
         [Env.perc],
         [Env.perc(0.999,0.001,1,4)]
     ],inf),
-    \dur, Pseq([1,0.5,0.5,0.25,0.25],inf),
+    \dur, Pseq([1],inf),
     \finish, ~beatsToSeconds
 ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+);
+
+4.wait;
+
+	~lightsAddr.sendMsg("/stoprec", "stoprec");
+	Pbindef(\frase,).stop;
+	"done".postln;
+});
 )
+
+r.play;
+
+~lightsAddr.sendMsg('/startrec',"startrec".postln);
+
+~lightsAddr.sendMsg('/stoprec', "stoprec");
+
+*/
+
+(
+Pbindef(\frase,
+    \instrument, \DcOuts,
+	\legato,1,
+	\stretch,4,
+    \bus,Pseq([(0..5)],inf) + ~lightsBus.index,
+	\amp,1,
+    \env, Pseq([
+        [Env.perc],
+        [Env.perc(0.999,0.001,1,4)]
+    ],inf),
+    \dur, Pseq([1],inf),
+    \finish, ~beatsToSeconds
+).play(~metro.base ,quant:~metro.base.beatsPerBar);
+);
+
+
 
 // start a crescendo   \amp, ~dynamics.subBus(0).asMap,
 Pmono(\ampControl,
@@ -125,8 +164,8 @@ Ndef(\monitor){
  ~ph0func = { arg n;
 Pbindef(\frase,
     \instrument, \DcOuts,
-    \bus, Pseq([(0..5)],n_times) + ~lightsBus.index,
-    \amp, ~dynamics.subBus(0).asMap,
+    \bus, Pseq([(0..5)],n) + ~lightsBus.index,
+    \amp, 1,//~dynamics.subBus(0).asMap,
     \env, Pseq([
         [Env.perc],
         [Env.perc(0.999,0.001,1,4)]
@@ -140,11 +179,11 @@ Pmono(\ampControl,
 	\stretch,4,
 	\legato,1,
     \out, ~dynamics.subBus(0),
-    \amp, Pseg(levels:[1,1],durs:[1],curves:4,repeats:1),
+    \amp, Pseg(levels:[0,1],durs:[10],curves:4,repeats:1),
 ).play;
-)
+})
 
-
+~ph0func.value(20);
 
 
 /*
@@ -207,6 +246,27 @@ Pbindef(\forward,\dur, Pseq((1/8!9)++(1/4!3),inf)).play(~metro.base ,quant:[~met
 
 Pbindef(\forward).stop;
 Pbindef(\forward).clear;
+
+
+(
+
+
+Pbindef(\forward,
+    \instrument, \DcOuts,
+	\stretch,4,
+	\legato,1,
+    \bus,Pseq((0..5),1) + ~lightsBus.index,
+    \amp,1,
+    \env, Pseq([
+		[Env.perc(0.001,0.999,1,4)]
+    ],inf),
+	\dur, Pseq([1/4],inf),
+    \finish, ~beatsToSeconds
+).play(~metro.base);
+
+	(6.01).wait;
+
+
 
 
 (
@@ -569,7 +629,7 @@ Pbindef(\ph5,
         [ [Env.perc], [Env.sine], [Env.sine] ],
         [ [Env.sine], [Env.perc], [Env.perc] ],
     ], inf),
-	 \bus,Pseq([(0..1)],inf) + ~lightsBus.index,
+	 \bus,Pseq([(0..2)],inf) + ~lightsBus.index,
 	//\bus,Pfunc{|e| 0 + (0..e.env.size-1).postln },
     \dur, Pseq([1],inf),
     \finish, ~beatsToSeconds
@@ -583,6 +643,330 @@ Pbindef(\ph5,
 
 Pbindef(\ph5).stop
 Pbindef(\ph5).clear
+
+
+
+/*
+https://youtu.be/AEpn6HvQSKg?t=8
+My reinterpretation is first-last-random fast envelope 1/0 .
+*/
+
+(
+ Pbindef(\firstlastRand,
+    \instrument, \DcOuts,
+    	\stretch,4,
+    	\legato,1,
+	\bus,Pseq([0,5,(1..4).choose],inf)+ ~lightsBus.index,
+    \amp,1,
+    \env, Pseq([
+    		[Env.perc(0.001,0.999,1,4)]
+    ],inf),
+	\dur, Pseq((1/16!10.rand)++(1/8!4.rand)++(1/4!1),inf),//added some .rand
+    \finish, ~beatsToSeconds
+    ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+)
+
+Pbindef(\firstlastRand).stop;
+Pbindef(\firstlastRand).clear;
+
+/*
+https://youtu.be/AEpn6HvQSKg?t=11
+tutti
+env perc log
+Env.perc(0.001,0.999,1,8).plot;
+
+*/
+(
+    Pbindef(\tutti,
+    \instrument, \DcOuts,
+    	\legato,1,
+    	\stretch,4,
+    \bus,Pseq([(0..5)],inf) + ~lightsBus.index,
+    \amp,1,
+    \env, Pseq([
+		[Env.perc(0.001,0.999,1,8)]
+    ],inf),
+	\dur, Pseq([2],inf),
+    \finish, ~beatsToSeconds
+    ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+)
+
+Pbindef(\tutti).stop
+Pbindef(\tutti).clear
+
+
+
+/*
+https://youtu.be/AEpn6HvQSKg?t=13
+
+https://doc.sccode.org/Tutorials/A-Practical-Guide/PG_Cookbook06_Phrase_Network.html
+
+https://doc.sccode.org/Classes/Dictionary.html
+
+
+last to first adjacent couple - single -  non adj couple
+
+couple from first to last
+
+random On off from last to first
+
+random On off from  first to last
+
+seq 5 3 0 X2
+
+seq 0 3 5 X2
+
+group of half  \bus,Pseq([(0..2),(3..5)],inf)+ ~lightsBus.index,
+like \ph2
+
+tutti
+
+one on one off all  with decay
+*/
+
+
+ (
+    Pbindef(\adj,
+    \instrument, \DcOuts,
+
+    \stretch,4,
+    \legato,1,
+    \bus,Ptuple([
+    Pseq([0,1,2,3,4,5].reverse,inf),
+	Pseq([1,2,3,4,5,0].reverse,inf),
+    ],inf)+ ~lightsBus.index,
+    \amp,1,
+    \env, Pseq([
+			[Env.perc(0.001,0.999,1,4)]
+    ],inf),
+    	\dur, Pseq([1/32],inf),
+    \finish, ~beatsToSeconds
+    ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+)
+
+Pbindef(\adj).stop
+Pbindef(\adj).clear
+
+(
+    Pbindef(\seq,
+    \instrument, \DcOuts,
+    	\legato,1,
+    	\stretch,4,
+    \bus,Pseq((0..5).reverse.mirror1,1) + ~lightsBus.index,
+    \amp,1,
+    \env, Pseq([
+		[Env.perc(0.001,0.999,1,8)]
+    ],inf),
+	\dur, Pseq([1/32],inf),
+    \finish, ~beatsToSeconds
+    ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+)
+
+Pbindef(\seq).stop;
+Pbindef(\seq).clear;
+
+
+// non adj couple
+(
+a = Pseq([0,1,2,3,4,5], 1);
+b =  (2+3.rand)+a; //
+
+    Pbindef(\nonAdj,
+    \instrument, \DcOuts,
+    	\legato,1,
+    	\stretch,4,
+	\bus, Ptuple([a, b%6], 2) + ~lightsBus.index,
+    \amp,1,
+    \env, Pseq([
+		[Env.perc(0.001,0.999,1,8)]
+    ],inf),
+	\dur, Pseq([1/32],inf),
+    \finish, ~beatsToSeconds
+    ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+)
+
+Pbindef(\nonAdj).stop;
+Pbindef(\nonAdj).clear;
+
+
+(
+a = Pseq([0,1,2,3,4,5], inf);
+b =  (1)+a; //
+
+    Pbindef(\adjPlus1,
+    \instrument, \DcOuts,
+    	\legato,1,
+    	\stretch,4,
+	\bus, Ptuple([a, b%6], inf) + ~lightsBus.index,
+    \amp,1,
+    \env, Pseq([
+		[Env.perc(0.001,0.999,1,8)]
+    ],inf),
+	\dur, Pseq([1/32],inf),
+    \finish, ~beatsToSeconds
+    ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+)
+
+Pbindef(\adjPlus1).stop;
+Pbindef(\adjPlus1).clear;
+
+
+//random On off from last to first \amp,Prand((0..1),inf),
+
+(
+    Pbindef(\randonoffreverse,
+    \instrument, \DcOuts,
+    	\legato,1,
+    	\stretch,4,
+	\bus, Pseq([0,1,2,3,4,5].reverse, inf) + ~lightsBus.index,
+	\amp,Prand((0..1),inf),
+    \env, Pseq([
+		[Env.perc(0.001,0.999,1,8)]
+    ],inf),
+	\dur, Pseq([1/32],inf),
+    \finish, ~beatsToSeconds
+    ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+)
+
+Pbindef(\randonoffreverse).stop;
+Pbindef(\randonoffreverse).clear;
+
+// random On off from  first to last
+
+(
+    Pbindef(\randonoff,
+    \instrument, \DcOuts,
+    	\legato,1,
+    	\stretch,4,
+	\bus, Pseq([0,1,2,3,4,5].reverse, inf) + ~lightsBus.index,
+	\amp,Prand((0..1),inf),
+    \env, Pseq([
+		[Env.perc(0.001,0.999,1,8)]
+    ],inf),
+	\dur, Pseq([1/32],inf),
+    \finish, ~beatsToSeconds
+    ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+)
+
+Pbindef(\randonoff).stop;
+Pbindef(\randonoff).clear;
+
+//seq 5 3 0 X2
+
+(
+    Pbindef(\seq,
+    \instrument, \DcOuts,
+    	\legato,1,
+    	\stretch,4,
+	\bus, Pseq([5,3,0], 2) + ~lightsBus.index,
+	\amp,1,
+    \env, Pseq([
+		[Env.perc(0.001,0.999,1,8)]
+    ],inf),
+	\dur, Pseq([1/32],inf),
+    \finish, ~beatsToSeconds
+    ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+)
+
+Pbindef(\seq).stop;
+Pbindef(\seq).clear;
+
+//seq 0 3 5 X2
+
+(
+    Pbindef(\seq,
+    \instrument, \DcOuts,
+    \bus, Pseq([5,3,0].reverse, 2) + ~lightsBus.index,
+ ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+)
+
+Pbindef(\seq).stop;
+Pbindef(\seq).clear;
+
+// group of half  \bus,Pseq([(0..2),(3..5)],inf)+ ~lightsBus.index,
+
+(
+    Pbindef(\grphalf,
+    \instrument, \DcOuts,
+    \legato,1,
+    \stretch,4,
+	\bus,Pseq([(0..2),(3..5)],inf)+ ~lightsBus.index,
+	\amp,1,
+    \env, Pseq([
+		[Env.perc(0.001,0.999,1,8)]
+    ],inf),
+	\dur, Pseq((1/8!3),1),
+    \finish, ~beatsToSeconds
+    );
+
+
+// Pbindef(\ghalf).stop;
+// Pbindef(\ghalf).clear;
+
+
+// one on one off all with decay
+
+Pbindef(\oneononeoff,
+    \instrument, \DcOuts,
+	\legato,1,
+	\stretch,4,
+	\bus, Pseq([[0,2,4]],1)+ ~lightsBus.index,
+	\amp, 1,
+    \env, Pseq([
+		[Env.perc(0.001,0.999,1,-4)]
+    ],inf),
+	\dur, Pseq([1/12],inf),
+    \finish, ~beatsToSeconds
+);
+
+// Pbindef(\oneononeoff).stop;
+// Pbindef(\oneononeoff).clear;
+
+
+
+Pbindef(\tutti,
+    \instrument, \DcOuts,
+	\legato,1,
+	\stretch,4,
+    \bus,Pseq([(0..5)],inf) + ~lightsBus.index,
+    \amp,1,
+    \env, Pseq([
+        [Env.perc],
+        [Env.perc(0.999,0.001,1,4)]
+    ],inf),
+	\dur, Pseq((1!1),2),
+    \finish, ~beatsToSeconds
+);
+)
+
+// Pbindef(\tutti).stop
+// Pbindef(\tutti).clear
+
+// group of half
+(
+Pbindef(\grphalf,
+	\instrument, \DcOuts,
+	\bus,Pseq([(0…2),(3…5)],inf),
+	\dur, Pseq((1/8!3),1)
+);
+
+// one on one off all
+Pbindef(\oneononeoff,
+	\instrument, \DcOuts,
+	\bus, Pseq([[0,2,4]],1),
+	\dur, Pseq([1/12],inf),
+);
+
+Pbindef(\tutti,
+	\instrument, \DcOuts,
+	\bus,Pseq([(0…5)],inf),
+	\dur, Pseq([1],2)
+);
+)
+
+Pdef(\play, Psym(Pseq([\grphalf, \oneononeoff, \tutti], inf).trace)).play;
+
+Pdef(\play, Psym(Pseq([\grphalf, \oneononeoff, \tutti], inf).trace)).play;
 
 
 

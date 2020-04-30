@@ -1,3 +1,4 @@
+
 import oscP5.*;
 import netP5.*;
 
@@ -11,7 +12,7 @@ float amp1,amp2,amp3,amp4,amp5,amp6;
 
 
 void setup(){
-  size(400, 66);
+  size(420, 66);
 
   osc = new OscP5(this, 12321);
   sc = new NetAddress("127.0.0.1", 57120);
@@ -31,33 +32,34 @@ void draw(){
   osc.send(msg, sc);
 
  // UI
- noStroke();
+ //noStroke();
+ strokeWeight(0.1);
+ 
 
-        // channel 1
-   fill(153,255*amp1,0);
-   rect(0,0,width/6,height*amp1);
+   // channel 1
+  fill(153, 255*amp1, 0);
+  rect(0, 0, width/6, height*amp1);
 
-       // channel 2
-   fill(153,255*amp2,0);
-   rect(66,0,width/6,height*amp2);
-
-        // channel 3
-   fill(153,255*amp3,0);
-   rect(132,0,width/6,height*amp3);
-   
-           // channel 4
-   fill(153,255*amp4,0);
-   rect(198,0,width/6,height*amp4);
+  // channel 2
   
+  fill(153, 255*amp2, 0);
+  rect(70, 0, width/6, height*amp2);
 
-           // channel 5
-   fill(153,255*amp5,0);
-   rect(264,0,width/6,height*amp5);
+  // channel 3
+  fill(153, 255*amp3, 0);
+  rect(140, 0, width/6, height*amp3);
 
+  // channel 4
+  fill(153, 255*amp4, 0);
+  rect(210, 0, width/6, height*amp4);
 
-           // channel 6
-   fill(153,255*amp6,0);
-   rect(330,0,width/6,height*amp6);
+  // channel 5
+  fill(153, 255*amp5, 0);
+  rect(280, 0, width/6, height*amp5);
+
+  // channel 6
+  fill(153, 255*amp6, 0);
+  rect(350, 0, width/6, height*amp6);
 
 }
 
