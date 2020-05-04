@@ -1,99 +1,174 @@
+(
+Pbindef(\forward,\bus,Pseq((0..5).pyramid(1),1) + ~lightsBus.index).play(~metro.base ,quant:~metro.base.beatsPerBar);
+)
 
-~lightsAddr = NetAddr("127.0.0.1", 12321);
+// elements
+(0..5).pyramid(1);
+[ 0, 0, 1, 0, 1, 2, 0, 1, 2, 3, 0, 1, 2, 3, 4, 0, 1, 2, 3, 4, 5 ].size;
+
+// elements
+(0..5).pyramid(2);
+[ 5, 4, 5, 3, 4, 5, 2, 3, 4, 5, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5 ].size
+
+// elements
+(0..5).pyramid(3);
+[ 0, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 2, 3, 4, 5, 3, 4, 5, 4, 5, 5 ].size
+
+// elements
+(0..5).pyramid(4);
+[ 0, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 2, 3, 4, 5, 3, 4, 5, 4, 5, 5 ].size
+
+// elements
+(0..5).pyramid(5);
+[ 0, 0, 1, 0, 1, 2, 0, 1, 2, 3, 0, 1, 2, 3, 4, 0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 0, 1, 2, 3, 0, 1, 2, 0, 1, 0 ].size
+
+// elements
+(0..5).pyramid(6);
+[ 5, 4, 5, 3, 4, 5, 2, 3, 4, 5, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 2, 3, 4, 5, 3, 4, 5, 4, 5, 5 ].size
+
+// 41 elements
+(0..5).pyramid(7);
+[ 0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 0, 1, 2, 3, 0, 1, 2, 0, 1, 0, 0, 1, 0, 1, 2, 0, 1, 2, 3, 0, 1, 2, 3, 4, 0, 1, 2, 3, 4, 5 ].size
+
+// 41 elements
+(0..5).pyramid(8);
+[ 0, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 2, 3, 4, 5, 3, 4, 5, 4, 5, 5, 4, 5, 3, 4, 5, 2, 3, 4, 5, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5 ].size;
+
+// 36 elements
+(0..5).pyramid(9);
+[ 0, 0, 1, 0, 1, 2, 0, 1, 2, 3, 0, 1, 2, 3, 4, 0, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 2, 3, 4, 5, 3, 4, 5, 4, 5, 5 ].size;
+
+
+// 36 elements
+(0..5).pyramid(10);
+[ 5, 4, 5, 3, 4, 5, 2, 3, 4, 5, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 0, 1, 2, 3, 0, 1, 2, 0, 1, 0 ].size;
 
 /*
-osc.plug(this, %22startrec%22, %22/startrec%22);
-osc.plug(this, %22stoprec%22, %22/stoprec%22);
+powerset
+Returns all possible combinations of the array's elements.
 */
 
+(0..5).powerset.postln;
+(0..5).powerset.sort({ |a, b| a.size > b.size }); // sort by size, big first
+(0..5).powerset.sort({ |a, b| a.size > b.size }).reverse; // by size, small first
+
+
+/*Slide*/
+(0..5).slide(2, 1).asCompileString.postln;
+[ 0, 1, 1, 2, 2, 3, 3, 4, 4, 5 ]
+
+
+(0..5).slide(3, 1).asCompileString.postln;
+[ 0, 1, 2, 1, 2, 3, 2, 3, 4, 3, 4, 5 ]
+
+(0..5).slide(4, 1).asCompileString.postln;
+[ 0, 1, 2, 3, 1, 2, 3, 4, 2, 3, 4, 5 ]
+
+(0..5).slide(5, 1).asCompileString.postln;
+[ 0, 1, 2, 3, 4, 1, 2, 3, 4, 5 ]
+
+
+(0..5).slide(1, 2).asCompileString.postln;
+[ 0, 2, 4 ]
+
+
+(0..5).slide(3, 2).asCompileString.postln;
+[ 0, 1, 2, 2, 3, 4 ]
+
+(0..5).slide(4, 2).asCompileString.postln;
+[ 0, 1, 2, 3, 2, 3, 4, 5 ]
+
+(0..5).slide(5, 2).asCompileString.postln;
+[ 0, 1, 2, 3, 4 ]
+
+
+(0..5).slide(1, 3).asCompileString.postln;
+[ 0, 3 ]
+
+(0..5).slide(2, 3).asCompileString.postln;
+[ 0, 1, 3, 4 ]
+
+
+(0..5).slide(4, 3).asCompileString.postln;
+[ 0, 1, 2, 3 ]
+
+(0..5).slide(5, 3).asCompileString.postln;
+[ 0, 1, 2, 3, 4 ]
+
+(0..5).slide(6, 3).asCompileString.postln;
+[ 0, 1, 2, 3, 4, 5 ]
+
+
+
+(0..5).slide(1, 4).asCompileString.postln;
+[ 0, 4 ]
+
+(0..5).slide(2, 4).asCompileString.postln;
+[ 0, 1, 4, 5 ]
+
+(0..5).slide(3, 4).asCompileString.postln;
+[ 0, 1, 2 ]
+
+(0..5).slide(4, 4).asCompileString.postln;
+[ 0, 1, 2, 3 ]
+
+(0..5).slide(5, 4).asCompileString.postln;
+[ 0, 1, 2, 3, 4 ]
+
+(0..5).slide(6, 4).asCompileString.postln;
+[ 0, 1, 2, 3, 4, 5 ]
+
+
+(0..5).slide(1, 5).asCompileString.postln;
+[ 0, 5 ]
+(0..5).slide(2, 5).asCompileString.postln;
+[ 0, 1 ]
+(0..5).slide(3, 5).asCompileString.postln;
+[ 0, 1, 2 ]
+(0..5).slide(4, 5).asCompileString.postln;
+[ 0, 1, 2, 3 ]
+(0..5).slide(5, 5).asCompileString.postln;
+[ 0, 1, 2, 3, 4 ]
+(0..5).slide(6, 5).asCompileString.postln;
+[ 0, 1, 2, 3, 4, 5 ]
+
+
+(0..5).slide(5, 1).asCompileString.postln;
+(0..5).slide(4, 1).asCompileString.postln;
+
+
+
+.slide(2, 1)
+
+
+https://github.com/DarienBrito/Self_Similar/blob/master/1.Counting_123.scd
+
+
+https://composerprogrammer.com/teaching/supercollider/sctutorial/9.1%20Algorithmic%20Strategies.html
+http://www.musicaecodice.it/SC_Controllo/SC_Controllo.php
+
+
+// Start/
 (
-r =Routine({
-~lightsAddr.sendMsg('/startrec',"startrec");
+var lightsAddr = ~lightsAddr;
 
-
- Pbindef(\firstlastRand,
+p = Pbindef(\forward,
     \instrument, \DcOuts,
-    	\stretch,4,
-    	\legato,1,
-	\bus,Pseq([0,5,(1..4).choose],inf)+ ~lightsBus.index,
+	\stretch,4,
+	\legato,1,
+    \bus,Pseq((0..5).slide(2, 1),1) + ~lightsBus.index,
     \amp,1,
     \env, Pseq([
-    		[Env.perc(0.001,0.999,1,4)]
+		[Env.perc(0.001,0.999,1,4)]
     ],inf),
-	\dur, Pseq((1/16!4)++(1/8!2)++(1/4!1),inf),//added some .rand
+	\dur, Pseq([1/8],inf),
     \finish, ~beatsToSeconds
-    ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+);
 
-
-	((3/4)*2).wait;
-
-~lightsAddr.sendMsg('/stoprec',"stoprec");
-Pbindef(\firstlastRand).stop;
-
-//Pbindef(\firstlastRand).clear;
-})
+Pfset(
+	func:{lightsAddr.sendMsg('/startrec',"startrec".postln)},
+	pattern:p ,
+	cleanupFunc:{lightsAddr.sendMsg('/stoprec',"stoprec".postln)}
+).play(~metro.base ,quant:~metro.base.beatsPerBar);
 )
 
-r.play;
-
-
-(
-r =Routine({
-
-~lightsAddr.sendMsg('/startrec',"startrec".postln);
-//------------------------------------
-
-Pbindef(\ph0,
-    \instrument, \DcOuts,
-    	\stretch,4,
-    \bus,Pseq([0,5,1,4,2,3],1) + ~lightsBus.index,
-    \amp,1,
-    \env, Pseq([
-    [Env.perc(0.999,0.001,1,-2)]
-    ],inf),
-    	\dur, Pseq((1/2!2)++(1/4!5),inf),
-    \finish, ~beatsToSeconds
-    ).play(~metro.base);
-
-
-	(9.01).wait;
-//------------------------------------
-~lightsAddr.sendMsg('/stoprec',"stoprec".postln);
-
-Pbindef(\ph0).stop.clear;
-
-}).play(~metro.base ,quant:~metro.base.beatsPerBar);
-)
-(1/2!2)++(1/4!5)
-[ 0.5, 0.5, 0.25, 0.25, 0.25, 0.25, 0.25 ]
-1/8
-0.5*2
-
-( // an interactive session
-e.stop
-e.play(~metro.base ,quant:~metro.base.beatsPerBar);
-e.reset
-
-~lightsAddr.sendMsg("/startrec","startrec".postln)
-~lightsAddr.sendMsg("/stoprec", "stoprec".postln)
-
-~recgif
-~metro.base.tempo
-
-~grillini2 = {arg amp;
-d = Routine{
-	Pbindef(\grillini).stop;
-
-	Pbindef(\grillini,
-	\out, 38,
-	\bufnum, ~noise,
-	\amp,amp,
-	\freq, 115.midicps ,
-	\rq, 2,
-	\sustain, 0.0001,
-		\dur, Pstutter(17, Pfunc({ exprand(0.005, 0.03)}))).play(~metroBase,quant:[0,0]);
-(~metro[6].tempo).wait; // durata della frase
-Pbindef(\grillini).stop;
-	};
-
-~metroBase.play(d,quant:[0,0]);};  

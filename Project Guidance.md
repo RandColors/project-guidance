@@ -1,4 +1,4 @@
-## Video Cuts Analysis ##
+## Video Cuts ##
 
 The goal is to take inspirations from this video, 
 I edited it to try to better understand what's going on about the light design.
@@ -81,6 +81,139 @@ Run
 
 
 
+
+if you like to make .gif files from your pattern here the code:
+
+
+    import gifAnimation.*;
+    import oscP5.*;
+    import netP5.*;
+    
+    GifMaker gifExport;
+    int frames = 0;
+    
+    OscP5 osc;
+    NetAddress sc;
+    
+    float amp1, amp2, amp3, amp4, amp5, amp6;
+    
+    public void setup() {
+    frameRate(60);
+      smooth();
+      size(420, 66);
+     
+      osc = new OscP5(this, 12321);
+      sc = new NetAddress("127.0.0.1", 57120);
+      osc.plug(this, "newamps", "/amps");
+      osc.plug(this, "startrec", "/startrec");
+      osc.plug(this, "stoprec", "/stoprec");
+     
+    
+      noFill();
+      stroke(0);
+      strokeWeight(20);
+     
+      gifExport = new GifMaker(this, "export.gif", 100);
+    }
+    
+    void draw() {
+    
+      background(255);
+    
+      background(0);
+    
+      //ask data at frameRate using .send
+      OscMessage msg = new OscMessage("/getAmps");
+      osc.send(msg, sc);
+    
+      // UI
+      noStroke();
+    
+      // channel 1
+      fill(153, 255*amp1, 0);
+      rect(0, 0, width/6, height*amp1);
+    
+      // channel 2
+      
+      fill(153, 255*amp2, 0);
+      rect(70, 0, width/6, height*amp2);
+    
+      // channel 3
+      fill(153, 255*amp3, 0);
+      rect(140, 0, width/6, height*amp3);
+    
+      // channel 4
+      fill(153, 255*amp4, 0);
+      rect(210, 0, width/6, height*amp4);
+    
+      // channel 5
+      fill(153, 255*amp5, 0);
+      rect(280, 0, width/6, height*amp5);
+    
+      // channel 6
+      fill(153, 255*amp6, 0);
+      rect(350, 0, width/6, height*amp6);
+    
+      if (gifExport != null) {
+    gifExport.setDelay(20);
+    gifExport.addFrame();
+    frames++;
+      }
+    }
+    
+    void newamps(float rms1, float rms2, float rms3, float rms4, float rms5, float rms6) {
+      amp1 = rms1;
+      amp2 = rms2;
+      amp3 = rms3;
+      amp4 = rms4;
+      amp5 = rms5;
+      amp6 = rms6;
+      println("[", amp1, amp2, amp3, amp4, amp5, amp6, "]");
+    }
+    
+    void startrec(String s) {
+      gifExport = new GifMaker(this, "export.gif", 100);
+      gifExport.setRepeat(0); // make it an "endless" animation
+      println("----------- start " + s);
+    }
+    
+    void stoprec(String s) {
+      gifExport.finish();
+      exit();
+      println("----------- stop " + s);
+    }
+    
+// replace the pattern in p 
+
+    (
+    
+    p = Pbindef(\firstlastRand,
+    \instrument, \DcOuts,
+    \stretch,4,
+    \legato,1,
+    	\bus,Pseq([0,5,(1..4).choose],inf)+ ~lightsBus.index,
+    \amp,1,
+    \env, Pseq([
+    		[Env.perc(0.001,0.999,1,4)]
+    ],inf),
+    	\dur, Pseq((1/16!4)++(1/8!2)++(1/4!1),1),//added some .rand
+    \finish, ~beatsToSeconds
+    );
+    
+    Pfset(
+    	func:{(
+    ~lightsAddr = NetAddr("127.0.0.1", 12321);
+    ~lightsAddr.sendMsg('/startrec',"startrec".postln);
+    )},
+    	pattern: p,
+    	cleanupFunc:
+    	{
+    (
+    ~lightsAddr = NetAddr("127.0.0.1", 12321);
+    ~lightsAddr.sendMsg('/stoprec',"stoprec".postln);
+    )
+    }).play(~metro.base ,quant:~metro.base.beatsPerBar);
+    )
 
 
 ## first things first, default phrases: ##
@@ -204,6 +337,53 @@ Run
 	Pbindef(\powerset).stop;
 	Pbindef(\powerset).clear
     
+
+
+// Tour of Array methods 
+
+// Pyramid
+
+    (
+    10.do({ arg i;
+    	(0..5).pyramid(i + 1).postcs;
+    });
+    )
+
+[ 0, 0, 1, 0, 1, 2, 0, 1, 2, 3, 0, 1, 2, 3, 4, 0, 1, 2, 3, 4, 5 ]
+
+[ 5, 4, 5, 3, 4, 5, 2, 3, 4, 5, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5 ]
+
+[ 0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 0, 1, 2, 3, 0, 1, 2, 0, 1, 0 ]
+
+[ 0, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 2, 3, 4, 5, 3, 4, 5, 4, 5, 5 ]
+
+[ 0, 0, 1, 0, 1, 2, 0, 1, 2, 3, 0, 1, 2, 3, 4, 0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 0, 1, 2, 3, 0, 1, 2, 0, 1, 0 ]
+
+[ 5, 4, 5, 3, 4, 5, 2, 3, 4, 5, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 2, 3, 4, 5, 3, 4, 5, 4, 5, 5 ]
+
+[ 0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 0, 1, 2, 3, 0, 1, 2, 0, 1, 0, 0, 1, 0, 1, 2, 0, 1, 2, 3, 0, 1, 2, 3, 4, 0, 1, 2, 3, 4, 5 ]
+
+[ 0, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 2, 3, 4, 5, 3, 4, 5, 4, 5, 5, 4, 5, 3, 4, 5, 2, 3, 4, 5, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5 ]
+
+[ 0, 0, 1, 0, 1, 2, 0, 1, 2, 3, 0, 1, 2, 3, 4, 0, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 2, 3, 4, 5, 3, 4, 5, 4, 5, 5 ]
+
+[ 5, 4, 5, 3, 4, 5, 2, 3, 4, 5, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 0, 1, 2, 3, 0, 1, 2, 0, 1, 0 ]
+
+
+// .slide
+
+// Return a new Array whose elements are repeated subsequences from the receiver.
+
+
+[1, 2, 3, 4, 5, 6].slide(3, 1).postcs; 
+[ 1, 2, 3, 2, 3, 4, 3, 4, 5, 4, 5, 6 ]
+
+
+[1, 2, 3, 4, 5, 6].slide(3, 2).postcs;
+[ 1, 2, 3, 3, 4, 5 ]
+
+[1, 2, 3, 4, 5, 6].slide(4, 1).postcs;
+[ 1, 2, 3, 4, 2, 3, 4, 5, 3, 4, 5, 6 ]
 
 
 

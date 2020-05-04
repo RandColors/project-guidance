@@ -423,7 +423,7 @@ Pbindef(\ph0).clear
 )
 
 (
-Pbindef(\ph1,
+p =Pbindef(\ph1,
     \instrument, \DcOuts,
 	\legato,1,
 	\stretch,4,
@@ -433,7 +433,7 @@ Pbindef(\ph1,
 		[Env.perc(0.9999,0.0001,1,2)],
 		[Env.perc(0.0001,0.9999,1,1)]
     ],inf),
-	\dur, Pseq([1, 1/4],inf),
+	\dur, Pseq([1, 1/4],1),
     \finish, ~beatsToSeconds
 ).play(~metro.base ,quant:~metro.base.beatsPerBar);
 )
@@ -1426,3 +1426,7 @@ Pbindef(\reverse).clear;
     Pbindef(\palindromo).clear;
 
 
+https://youtu.be/AEpn6HvQSKg?t=115
+
+0,1,2 off off off forward
+off off off, 3, 4, 5

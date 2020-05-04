@@ -35,7 +35,7 @@ void draw() {
 
   background(0);
 
-  //fai la richiesta di dati a frameRate con .send
+  //ask data at frameRate using .send
   OscMessage msg = new OscMessage("/getAmps");
   osc.send(msg, sc);
 
