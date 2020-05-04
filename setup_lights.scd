@@ -14,32 +14,3 @@ OSCdef(\processing,{
 }, "/getAmps").permanent_(true);
 
 
-//
-// OSCdef(\processing,{
-//
-// 	~lightsAddr.sendMsg('/amps', ~lightsBus.getnSynchronous(6).postln );
-//
-// }, "/getAmps").permanent_(true);
-//
-//
-
-
-
-//
-// // UNO
-// OSCdef(\getamp1,{
-// 	~n1.sendMsg('/amp1',~bus0.getSynchronous.asFloat);
-// }, "/getamp1");
-// // DUE
-
-/* MAgari con :
-
-getnSynchronous(count)
-Get the current values of this control bus. This command is synchronous.
-
-Arguments:
-count
-The number of channels to read, starting from this bus' first channel.
-
-Returns:
-Array of values.*/

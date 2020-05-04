@@ -1,6 +1,4 @@
-/* TODO
-look at “phrase networks”: save using dictionaries and then use pbind to recall/structure ..
-*/
+
 
 (
 s.waitForBoot{
@@ -22,6 +20,9 @@ OSCdef(\processing).disable // pause
 OSCdef(\processing).enable // resume
 
 // set tempo
-~metro.setBpm(60);
-
+~metro.setBpm(60,4);
+~metro.playClick;
+~metro.stopClick;
+~metro.print;
 s.scope
+

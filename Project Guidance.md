@@ -437,8 +437,8 @@ My reinterpretation is first- random - last fast envelope 1/0 .
 
  Pbindef(\firstRandlast,
     \instrument, \DcOuts,
-    	\stretch,4,
-    	\legato,1,
+    \stretch,4,
+    \legato,1,
     \bus,Pseq((0..5),inf) + ~lightsBus.index,
     \amp,1,
     \env, Pseq([
@@ -462,8 +462,8 @@ Env.perc(0.001,0.999,1,8).plot;
     (
     Pbindef(\tutti,
     \instrument, \DcOuts,
-    	\legato,1,
-    	\stretch,4,
+    \legato,1,
+    \stretch,4,
     \bus,Pseq([(0..5)],inf) + ~lightsBus.index,
     \amp,1,
     \env, Pseq([
@@ -480,74 +480,703 @@ Env.perc(0.001,0.999,1,8).plot;
 
 https://youtu.be/AEpn6HvQSKg?t=13
 
-https://doc.sccode.org/Tutorials/A-Practical-Guide/PG_Cookbook06_Phrase_Network.html
+here I try to make a "phrase" made by different "words" or better little articulations of a word.
+Are not even close to what is happen in the video.
 
-https://doc.sccode.org/Classes/Dictionary.html
+- last to first adjacent couple - single -  non adj couple
+- couple from first to last
+- random On off from last to first
+- random On off from  first to last 
+- seq 5 3 0 X2
+- seq 0 3 5 X2
+- group of half \ph2
+- tutti
+- one on one off all  with decay
 
 
-last to first adjacent couple - single -  non adj couple
+// last to first adjacent couple
+
+    (
+    Pbindef(\adj,
+    \instrument, \DcOuts,
+    \stretch,4,
+    \legato,1,
+    \bus,Ptuple([
+    Pseq([0,1,2,3,4,5].reverse,inf),
+    	Pseq([1,2,3,4,5,0].reverse,inf),
+    ],1)+ ~lightsBus.index,
+    \amp,1,
+    \env, Pseq([
+    			[Env.perc(0.001,0.999,1,4)]
+    ],inf),
+    	\dur, Pseq([1/32],inf),
+    \finish, ~beatsToSeconds
+    ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+    )
+    
+    Pbindef(\adj).stop;
+    Pbindef(\adj).clear; 
+
+// last to first
+
+    (
+    Pbindef(\reverse,
+    \instrument, \DcOuts,
+    \stretch,4,
+    \legato,1,
+    \bus,Pseq((0..5).reverse,1) + ~lightsBus.index,
+    \amp,1,
+    \env, Pseq([
+    		[Env.perc(0.001,0.999,1,4)]
+    ],inf),
+    	\dur, Pseq([1/4],inf),
+    \finish, ~beatsToSeconds
+    ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+    )
+    
+    
+    Pbindef(\reverse).stop;
+    Pbindef(\reverse).clear;
+    
+
+// non adj couple
+
+    (
+    a = Pseq([0,1,2,3,4,5], 1);
+    b =  (2+3.rand)+a; //
+    
+    Pbindef(\nonAdj,
+    \instrument, \DcOuts,
+    \legato,1,
+    \stretch,4,
+    \bus, Ptuple([a, b%6], 2) + ~lightsBus.index,
+    \amp,1,
+    \env, Pseq([
+    		[Env.perc(0.001,0.999,1,8)]
+    ],inf),
+    	\dur, Pseq([1/32],inf),
+    \finish, ~beatsToSeconds
+    ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+    )
+    
+    Pbindef(\nonAdj).stop;
+    Pbindef(\nonAdj).clear;
+    
+    
+
+// couple from first to last same as /adj
+
+    (
+    Pbindef(\adj,
+    \instrument, \DcOuts,
+    \stretch,4,
+    \legato,1,
+    \bus,Ptuple([
+    Pseq([0,1,2,3,4,5],inf),
+    	Pseq([1,2,3,4,5,0],inf),
+    ],1)+ ~lightsBus.index,
+    \amp,1,
+    \env, Pseq([
+    			[Env.perc(0.001,0.999,1,4)]
+    ],inf),
+    	\dur, Pseq([1/32],inf),
+    \finish, ~beatsToSeconds
+    ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+    )
+    
+    Pbindef(\adj).stop;
+    Pbindef(\adj).clear;
+    
+    /*
+    (
+    a = Pseq([0,1,2,3,4,5], inf);
+    b =  (1)+a; //
+    
+    Pbindef(\seqplus,
+    \instrument, \DcOuts,
+    \legato,1,
+    \stretch,4,
+    \bus, Ptuple([a, b%6], inf) + ~lightsBus.index,
+    \amp,1,
+    \env, Pseq([
+    		[Env.perc(0.001,0.999,1,8)]
+    ],inf),
+    	\dur, Pseq([1/32],inf),
+    \finish, ~beatsToSeconds
+    ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+    )
+    
+    Pbindef(\seqplus).stop;
+    Pbindef(\seqplus).clear;*/
+    
+    
 
 
 
+//random On off from last to first \amp,Prand((0..1),inf)
+    
+    (
+    Pbindef(\ronoffreverse,
+    \instrument, \DcOuts,
+    \legato,1,
+    \stretch,4,
+    \bus, Pseq([0,1,2,3,4,5].reverse, inf) + ~lightsBus.index,
+    \amp,Prand((0..1),inf),
+    \env, Pseq([
+    		[Env.perc(0.001,0.999,1,8)]
+    ],inf),
+    	\dur, Pseq([1/32],inf),
+    \finish, ~beatsToSeconds
+    ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+    )
+    
+    Pbindef(\ronoffreverse).stop;
+    Pbindef(\ronoffreverse).clear;
+    
+// random On off from  first to last
+    
+    (
+    Pbindef(\ronoff,
+    \instrument, \DcOuts,
+    \legato,1,
+    \stretch,4,
+    \bus, Pseq([0,1,2,3,4,5], inf) + ~lightsBus.index,
+    \amp,Prand((0..1),inf),
+    \env, Pseq([
+    		[Env.perc(0.001,0.999,1,8)]
+    ],inf),
+    	\dur, Pseq([1/32],inf),
+    \finish, ~beatsToSeconds
+    ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+    )
+    
+    Pbindef(\ronoff).stop;
+    Pbindef(\ronoff).clear;
+    
 
-couple from first to last
+//seq [5 3 0] 
+    
+    (
+    Pbindef(\seq,
+    \instrument, \DcOuts,
+    \legato,1,
+    \stretch,4,
+    \bus, Pseq([5,3,0], 2) + ~lightsBus.index,
+    \amp,1,
+    \env, Pseq([
+    		[Env.perc(0.001,0.999,1,8)]
+    ],inf),
+    	\dur, Pseq([1/32],inf),
+    \finish, ~beatsToSeconds
+    ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+    )
+    
+    Pbindef(\seq).stop;
+    Pbindef(\seq).clear;
+    
+//seq [0 3 5] 
+    
+    (
+    Pbindef(\seqrev,
+    \instrument, \DcOuts,
+    \legato,1,
+    \stretch,4,
+    \bus, Pseq([5,3,0].reverse, 4) + ~lightsBus.index,
+    \amp,1,
+    \env, Pseq([
+    		[Env.perc(0.001,0.999,1,8)]
+    ],inf),
+    	\dur, Pseq([1/32],inf),
+    \finish, ~beatsToSeconds
+     ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+    )
+    
+    Pbindef(\seqrev).stop;
+    Pbindef(\seqrev).clear;
+    
 
-random On off from last to first
-
-random On off from  first to last 
-
-seq 5 3 0 X2
-
-seq 0 3 5 X2
-
-group of half  \bus,Pseq([(0..2),(3..5)],inf)+ ~lightsBus.index,
-like \ph2
-
-tutti
-
-one on one off all  with decay
+// group of half  \bus,Pseq([(0..2),(3..5)],inf)
+    
+    (
+    Pbindef(\grphalf,
+    \instrument, \DcOuts,
+    \legato,1,
+    \stretch,4,
+    \bus,Pseq([(0..2),(3..5)],inf)+ ~lightsBus.index,
+    \amp,1,
+    \env, Pseq([
+    		[Env.perc(0.001,0.999,1,8)]
+    ],inf),
+    	\dur, Pseq((1/8!3),1),
+    \finish, ~beatsToSeconds
+    );
+    
+    
+    // Pbindef(\ghalf).stop;
+    // Pbindef(\ghalf).clear;
+    
+    
+// one on one off all with decay
+    
+    Pbindef(\oneononeoff,
+    \instrument, \DcOuts,
+    \legato,1,
+    \stretch,4,
+    \bus, Pseq([[0,2,4]],1)+ ~lightsBus.index,
+    \amp, 1,
+    \env, Pseq([
+    		[Env.perc(0.001,0.999,1,-4)]
+    ],inf),
+    	\dur, Pseq([1],inf),
+    \finish, ~beatsToSeconds
+    );
+    
+    // Pbindef(\oneononeoff).stop;
+    // Pbindef(\oneononeoff).clear;
+    
+ // tutti 
+   
+    Pbindef(\tutti,
+    \instrument, \DcOuts,
+    \legato,1,
+    \stretch,4,
+    \bus,Pseq([(0..5)],inf) + ~lightsBus.index,
+    \amp,1,
+    \env, Pseq([
+    [Env.perc(0.001,0.999,1,-4)]
+    ],inf),
+    	\dur, Pseq((1!1),1),
+    \finish, ~beatsToSeconds
+    ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+    )
+    
+    
+    // Pbindef(\tutti).stop;
+    // Pbindef(\tutti).clear;
+    
 
 
 https://youtu.be/AEpn6HvQSKg?t=30
 
-one yes one no 
-tutti 
-one yes one no with offset
-it gives the sansation of something that is moving 
+- one yes one no
+
+- tutti
+
+- one yes one no with offset
+
+//fake movement,it gives the sansation of something that is moving
+
+    (
+    Pbindef(\moving,
+    \instrument, \DcOuts,
+    \legato,1,
+    \stretch,4,
+    \bus, Pseq([[0,2,4],[0,1,2,3,4,5],[1,3,5]],6)+ ~lightsBus.index,
+    \amp, 1,
+    \env, Pseq([
+    		[Env.perc(0.001,0.999,1,-4)]
+    ],inf),
+    	\dur, Pseq([1/32],inf),
+    \finish, ~beatsToSeconds
+    ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+    )
+    
+    Pbindef(\moving).stop;
+    Pbindef(\moving).clear;
+    
 
 
 https://youtu.be/AEpn6HvQSKg?t=34
-one yes one no Decay to black
-one yes one no with offset
+
+- one yes one no Decay to black
+- one yes one no with offset
+
+// one on one off all with decay
+
+    (
+    Pbindef(\oneononeoff,
+    \instrument, \DcOuts,
+    \legato,1,
+    \stretch,4,
+    \bus, Pseq([[0,2,4]],1)+ ~lightsBus.index,
+    	\amp, 1,
+    \env, Pseq([
+    		[Env.perc(0.001,0.999,1,-4)]
+    ],inf),
+    	\dur, Pseq([1],inf),
+    \finish, ~beatsToSeconds
+    ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+    )
+    
+    Pbindef(\oneononeoff).stop;
+    Pbindef(\oneononeoff).clear;
 
 
-https://youtu.be/AEpn6HvQSKg?t=36
-tutti crescendo to black 
+ 	(
+    Pbindef(\combmov,
+    \instrument, \DcOuts,
+    \legato,1,
+    \stretch,4,
+    \bus, Pseq([[0,2,4],[1,3,5]],1)+ ~lightsBus.index,
+    \amp, 1,
+    \env, Pseq([
+    		[Env.perc(0.001,0.999,1,-4)]
+    ],inf),
+    \dur, Pseq([1/32,1/16],inf),
+    \finish, ~beatsToSeconds
+    ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+    )
+    
+    Pbindef(\combmov).stop;
+    Pbindef(\combmov).clear;
 
 
-https://youtu.be/AEpn6HvQSKg
-It's super fast
-on off off on on off 
-off off on off off on
+
+
+https://youtu.be/AEpn6HvQSKg?t=39
+
+- It's super fast,you could try with a rand on-off *2times
 black
+
+// tutti rhythm
+
+    (
+    Pbindef(\tutti,
+    \instrument, \DcOuts,
+    \legato,1,
+    \stretch,4,
+    \bus,Pseq([(0..5)],inf) + ~lightsBus.index,
+    \amp,1,
+    \env, Pseq([
+    [Env.perc(0.001,0.999,1,-4)]
+    ],inf),
+    	\dur, Pseq((1/16!1)++Rest(1/16),2),
+    \finish, ~beatsToSeconds
+    ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+    )
+    
+    
+    Pbindef(\tutti).stop;
+    Pbindef(\tutti).clear;
+    
+    
+    //
+    (
+    Pbindef(\ronoff,
+    \instrument, \DcOuts,
+    	\legato,1,
+    	\stretch,4,
+    	\bus, Pseq([0,1,2,3,4,5], 4) + ~lightsBus.index,
+    	\amp,Prand((0..1),inf),
+    \env, Pseq([
+    		[Env.perc(0.001,0.999,1,8)]
+    ],inf),
+    	\dur, Pseq([1/32],inf),
+    \finish, ~beatsToSeconds
+    ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+    )
+    
+    Pbindef(\ronoff).stop;
+    Pbindef(\ronoff).clear;
+    
+    
+    (
+    Pbindef(\tutti,
+    \instrument, \DcOuts,
+    \legato,1,
+    \stretch,4,
+    \bus,Pseq([(0..5)],inf) + ~lightsBus.index,
+    \amp,1,
+    \env, Pseq([
+    [Env.perc(0.001,0.999,1,-4)]
+    ],inf),
+    \dur, Pseq((1/16!1++Rest(1/8)),1),
+    \finish, ~beatsToSeconds
+    ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+    )
+    
+    
+    Pbindef(\tutti).stop;
+    Pbindef(\tutti).clear;
+
+
+
+    
+
 
 
 https://youtu.be/AEpn6HvQSKg?t=46
-blink / black 
-seq forward -> black
+
+- seq forward -> black
+
+(
+	Pbindef(\forward,
+    \instrument, \DcOuts,
+    \stretch,4,
+    \legato,1,
+    \bus,Pseq((0..5),1) + ~lightsBus.index,
+    \amp,1,
+    \env, Pseq([
+    		[Env.perc(0.001,0.999,1,4)]
+    ],inf),
+    \dur, Pseq((1/64!6)++Rest(1),inf),
+    \finish, ~beatsToSeconds
+    ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+)
+
+
+    Pbindef(\forward).stop;
+    Pbindef(\forward).clear;
+
+
 
 
 https://youtu.be/AEpn6HvQSKg?t=49
-tutti crescendo
-ASR one no one yes  alternating 1/8 
+
+- tutti crescendo
+- ASR one no one yes  alternating 1/8 
 it gives us a sense of something that pulsates
-superfast seq like before like 32nd or more for 1/8 forward and back
-tutti on tutti off 1/8
-seq forward ENV "staccato"
-tutti on tutti off 1/8 *2
-seq reverse ENV "staccato" 
-seq forward ENV "staccato"
-superfast seq like before like 32nd or more for some 1/8 
+- forward and back in 1/8
+- tutti on tutti off 1/8
+- seq forward ENV "staccato"
+- tutti on tutti off 1/8 *2
+- seq reverse ENV "staccato" 
+- seq forward ENV "staccato"
+- superfast seq like before like 32nd or more for some 1/8 
+    
+
+
+// tutti crescendo
+
+    (
+    Pbindef(\tutti,
+    \instrument, \DcOuts,
+    \legato,1,
+    \stretch,4,
+    \bus,Pseq([(0..5)],inf) + ~lightsBus.index,
+    \amp,1,
+    \env, Pseq([
+    [Env.perc(0.001,0.999,1,-4)]
+    ],inf),
+    \dur, Pseq((1/8!1),1),
+    \finish, ~beatsToSeconds
+    ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+    )
+    
+    
+    Pbindef(\tutti).stop;
+    Pbindef(\tutti).clear;
+
+
+// Env([0.001,0.8,1.0,1.0,0.001],[0.7,0.01,0.29,0.01],-4).plot;
+
+// ASR one no one yes  alternating 1/8
+
+// it gives us a sense of something that pulsates
+
+    (
+    Pbindef(\combmov,
+    \instrument, \DcOuts,
+    \legato,1,
+    \stretch,4,
+    \bus, Pseq([[0,2,4],[1,3,5]],3)+ ~lightsBus.index,
+    \amp, 1,
+    \env, Pseq([
+    		[Env([0.001,0.8,1.0,1.0,0.001],[0.7,0.01,0.29,0.01],-4)]
+    ],inf),
+    \dur, Pseq([1/8],inf),
+    \finish, ~beatsToSeconds
+    ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+    )
+    
+    Pbindef(\combmov).stop;
+    Pbindef(\combmov).clear;
+
+
+// palindromo make a 5tuplet..
+    
+    (
+    Pbindef(\palindromo,
+    \instrument, \DcOuts,
+    	\stretch,4,
+    	\legato,1,
+    \bus,Pseq((0..5).mirror1,1) + ~lightsBus.index,
+    \amp,1,
+    \env, Pseq([
+    		[Env.perc(0.001,0.999,1,4)]
+    ],inf),
+    	\dur, Pseq((1/40!10),inf),
+    \finish, ~beatsToSeconds
+    ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+    )
+    
+    Pbindef(\palindromo).stop;
+    Pbindef(\palindromo).clear;
+
+- ASR one no one yes  alternating 1/8
+it gives us a sense of something that pulsates
+
+(
+    Pbindef(\combmov,
+    \instrument, \DcOuts,
+    \legato,1,
+    \stretch,4,
+    \bus, Pseq([[0,2,4],[1,3,5]],3)+ ~lightsBus.index,
+    \amp, 1,
+    \env, Pseq([
+    		[Env([0.001,0.8,1.0,1.0,0.001],[0.7,0.01,0.29,0.01],-4)]
+    ],inf),
+    \dur, Pseq([1/8],inf),
+    \finish, ~beatsToSeconds
+    ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+)
+
+Pbindef(\combmov).stop;
+Pbindef(\combmov).clear;
+
+
+// palindromo make a 5tuplet..
+
+(
+    Pbindef(\palindromo,
+    \instrument, \DcOuts,
+    	\stretch,4,
+    	\legato,1,
+    \bus,Pseq((0..5).mirror1,1) + ~lightsBus.index,
+    \amp,1,
+    \env, Pseq([
+    		[Env.perc(0.001,0.999,1,4)]
+    ],inf),
+	\dur, Pseq((1/40!10),inf),
+    \finish, ~beatsToSeconds
+    ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+    )
+
+    Pbindef(\palindromo).stop;
+    Pbindef(\palindromo).clear;
+
+// - tutti on tutti off 1/8
+(
+    Pbindef(\tutti,
+    \instrument, \DcOuts,
+    \legato,1,
+    \stretch,4,
+    \bus,Pseq([(0..5)],4) + ~lightsBus.index,
+    \amp,1,
+    \env, Pseq([
+    [Env.perc(0.001,0.999,1,-4)]
+    ],inf),
+    \dur, Pseq((1/8!1),1),
+    \finish, ~beatsToSeconds
+    ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+)
+
+
+Pbindef(\tutti).stop;
+Pbindef(\tutti).clear;
+
+- seq forward ENV "staccato"
+
+(
+	Pbindef(\forward,
+    \instrument, \DcOuts,
+    \stretch,4,
+    \legato,1,
+    \bus,Pseq((0..5),1) + ~lightsBus.index,
+    \amp,1,
+    \env, Pseq([
+    		[Env.perc(0.001,0.999,1,4)]
+    ],inf),
+    \dur, Pseq((1/12!6),inf),
+    \finish, ~beatsToSeconds
+    ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+)
+
+
+    Pbindef(\forward).stop;
+    Pbindef(\forward).clear;
+
+// - tutti on tutti off 1/8
+(
+    Pbindef(\tutti,
+    \instrument, \DcOuts,
+    \legato,1,
+    \stretch,4,
+    \bus,Pseq([(0..5)],2) + ~lightsBus.index,
+    \amp,1,
+    \env, Pseq([
+    [Env.perc(0.001,0.999,1,-4)]
+    ],inf),
+    \dur, Pseq((1/8!1),inf),
+    \finish, ~beatsToSeconds
+    ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+)
+
+
+Pbindef(\tutti).stop;
+Pbindef(\tutti).clear;
+
+- seq reverse ENV "staccato"
+(
+Pbindef(\reverse,
+    \instrument, \DcOuts,
+	\stretch,4,
+	\legato,1,
+    \bus,Pseq((0..5).reverse,1) + ~lightsBus.index,
+    \amp,1,
+    \env, Pseq([
+		[Env.perc(0.001,0.999,1,4)]
+    ],inf),
+	\dur, Pseq([1/6],inf),
+    \finish, ~beatsToSeconds
+).play(~metro.base ,quant:~metro.base.beatsPerBar);
+)
+
+Pbindef(\reverse).stop;
+Pbindef(\reverse).clear;
+
+
+- seq forward ENV "staccato"
+(
+	Pbindef(\forward,
+    \instrument, \DcOuts,
+    \stretch,4,
+    \legato,1,
+    \bus,Pseq((0..5),1) + ~lightsBus.index,
+    \amp,1,
+    \env, Pseq([
+    		[Env.perc(0.001,0.999,1,4)]
+    ],inf),
+    \dur, Pseq((1/12!6),inf),
+    \finish, ~beatsToSeconds
+    ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+)
+
+
+    Pbindef(\forward).stop;
+    Pbindef(\forward).clear;
+
+
+
+// superfast seq like before like 32nd or more for some 1/8
+(
+    Pbindef(\palindromo,
+    \instrument, \DcOuts,
+    	\stretch,4,
+    	\legato,1,
+    \bus,Pseq((0..5).mirror1,1) + ~lightsBus.index,
+    \amp,1,
+    \env, Pseq([
+    		[Env.perc(0.001,0.999,1,4)]
+    ],inf),
+	\dur, Pseq((1/40!10),inf),
+    \finish, ~beatsToSeconds
+    ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+    )
+
+    Pbindef(\palindromo).stop;
+    Pbindef(\palindromo).clear;
+
 
 
 
