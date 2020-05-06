@@ -1,5 +1,3 @@
-
-
 (
 s.waitForBoot{
     [
@@ -24,5 +22,4 @@ OSCdef(\processing).enable // resume
 ~metro.playClick;
 ~metro.stopClick;
 ~metro.print;
-s.scope
 
