@@ -3,6 +3,78 @@
 
 */
 
+(
+~dEnv = Dictionary.new;
+
+	~dEnv.add(\perc -> Env.perc(0.001,0.999,1,-4));
+	~dEnv.add(\percrev ->  Env.perc(0.999,0.001,1,4));
+)
+
+// write to a .png
+~aplot = ~dEnv[\percrev].plot(bounds: Rect(left: 0, top: 400, width: 600, height: 400));
+i = Image.fromWindow(~aplot.parent, ~aplot.interactionView.bounds);
+i.write("~/desktop/\percrev.png".standardizePath);
+i.free;
+
+
+a =(0..5).powerset
+
+
+// write to a .png
+(
+~aplot =
+[ 0, 1, 2, 3, 4, 5, 5, 4, 3, 2, 1, 0 ]
+.plot(bounds: Rect(left: 0, top: 400, width:800 /*Window.screenBounds.width*/, height:600 /*Window.screenBounds.height*/),discrete: false, separately: false,numChannels:1);
+)
+
+i = Image.fromWindow(~aplot.parent, ~aplot.interactionView.bounds);
+i.write("~/desktop/mirror2).png".standardizePath);
+i.free;
+
+[ 0, 0, 1, 0, 1, 2, 0, 1, 2, 3, 0, 1, 2, 3, 4, 0, 1, 2, 3, 4, 5 ].size
+
+
+(
+    Pbindef(\forward,
+    \instrument, \DcOuts,
+    	\stretch,4,
+    	\legato,1,
+    \bus,Pseq((0..5),inf) + ~lightsBus.index,
+    \amp,1,
+    \env, Pseq([
+    		[~dEnv[\perc]]
+    ],inf),
+    	\dur, Pseq([1/4],inf),
+    \finish, ~beatsToSeconds
+    ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+    )
+
+
+    Pbindef(\forward).stop;
+    Pbindef(\forward).clear;
+
+
+
+
+	Pbind(\envelope, d[\exp] \dur,0.25).play;
+
+http://www.musicaecodice.it/SC_Env/SC_Env.php
+(
+~aplot = [
+ Env([0,0.5,0.1,0],        [0.1,0.2,1], \step),      // Scalini
+ Env([0,0.5,0.1,0],        [0.1,0.2,1], \lin),       // Curva lineare
+ Env([0.0001,0.5,0.1,0.0001],[0.1,0.2,1], \exp),     // Curva esponenziale
+ Env([0,0.5,0.1,0],        [0.1,0.2,1], \sin),       // Curva sinusoidale
+ Env([0,0.5,0.1,0],        [0.1,0.2,1], \wel),       // Curva welch
+ Env([0,0.5,0.1,0],        [0.1,0.2,1], \sqr),       // Curva radice
+ Env([0,0.5,0.1,0],        [0.1,0.2,1], \cub)].plot; // Curva quartica
+)
+
+~aplot = [0,2,3,2,1,0.4].plot;
+
+
+
+
 
 20.do{|i|Env.perc().plot(i,name:"myplotNum point visualized:"++i,minval: nil, maxval: nil,bounds:800@300)}
 

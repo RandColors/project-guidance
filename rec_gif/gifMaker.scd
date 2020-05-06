@@ -67,7 +67,7 @@ Returns all possible combinations of the array's elements.
 (0..5).slide(5, 1).asCompileString.postln;
 [ 0, 1, 2, 3, 4, 1, 2, 3, 4, 5 ]
 
-
+// 3 elements
 (0..5).slide(1, 2).asCompileString.postln;
 [ 0, 2, 4 ]
 
@@ -130,6 +130,13 @@ Returns all possible combinations of the array's elements.
 
 
 
+
+// write to a .png
+~aplot = (0..5).slide(5,2).plot(bounds: Rect(left: 0, top: 400, width: 600, height: 400),discrete: false, numChannels: 1, separately: false );
+i = Image.fromWindow(~aplot.parent, ~aplot.interactionView.bounds);
+i.write("~/desktop/slide(5,2).png".standardizePath);
+i.free;
+
 (
     10.do({ arg i;
     	(0..5).pyramidg(i + 1).postln;
@@ -137,6 +144,50 @@ Returns all possible combinations of the array's elements.
 )
 
 (0..5).pyramidg(1);
+// pyramidg(1) 6 arrays
+![pyramidg(1)|420x66, 50%](upload://56ugjrF2F49ClqRLrXvLS8Tqs7g.gif)
+[ [ 0 ], [ 0, 1 ], [ 0, 1, 2 ], [ 0, 1, 2, 3 ], [ 0, 1, 2, 3, 4 ], [ 0, 1, 2, 3, 4, 5 ] ]
+
+// pyramidg(2) 6
+![pyramidg(2)|420x66, 50%](upload://nl7D6zFVN9ra8GCrlZBPZZlRIsf.gif)
+[ [ 5 ], [ 4, 5 ], [ 3, 4, 5 ], [ 2, 3, 4, 5 ], [ 1, 2, 3, 4, 5 ], [ 0, 1, 2, 3, 4, 5 ] ]
+
+// pyramidg(3) 6 arrays
+![pyramidg(3)|420x66, 50%](upload://aekAz8n5CaXQNT7qkhuHL46EHNi.gif)
+[ [ 0, 1, 2, 3, 4, 5 ], [ 0, 1, 2, 3, 4 ], [ 0, 1, 2, 3 ], [ 0, 1, 2 ], [ 0, 1 ], [ 0 ] ]
+
+// pyramidg(4) 6 arrays
+![pyramidg(4)|420x66, 50%](upload://xnkH4oZZpWqwpv3PE7dn108Fs9P.gif)
+[ [ 0, 1, 2, 3, 4, 5 ], [ 1, 2, 3, 4, 5 ], [ 2, 3, 4, 5 ], [ 3, 4, 5 ], [ 4, 5 ], [ 5 ] ]
+
+// pyramidg(5) 11 arrays
+ arrays![pyramidg(5)|420x66, 50%](upload://fQ58fZSnTGcrmUtP4Z9gkjF7z1J.gif)
+[ [ 0 ], [ 0, 1 ], [ 0, 1, 2 ], [ 0, 1, 2, 3 ], [ 0, 1, 2, 3, 4 ], [ 0, 1, 2, 3, 4, 5 ], [ 0, 1, 2, 3, 4 ], [ 0, 1, 2, 3 ], [ 0, 1, 2 ], [ 0, 1 ], [ 0 ] ]
+
+
+// pyramidg(6) 11 arrays
+![pyramidg(6)|420x66, 50%](upload://m3HZbagFMowg91wD5VVEfb9RK6y.gif) !!
+[ [ 5 ], [ 4, 5 ], [ 3, 4, 5 ], [ 2, 3, 4, 5 ], [ 1, 2, 3, 4, 5 ], [ 0, 1, 2, 3, 4, 5 ], [ 1, 2, 3, 4, 5 ], [ 2, 3, 4, 5 ], [ 3, 4, 5 ], [ 4, 5 ], [ 5 ] ]
+
+// pyramidg(7) 11 arrays
+![pyramidg(7)|420x66, 50%](upload://uhIi77yHothrTJVFP58ZAvG5rMt.gif)
+[ [ 0, 1, 2, 3, 4, 5 ], [ 0, 1, 2, 3, 4 ], [ 0, 1, 2, 3 ], [ 0, 1, 2 ], [ 0, 1 ], [ 0 ], [ 0, 1 ], [ 0, 1, 2 ], [ 0, 1, 2, 3 ], [ 0, 1, 2, 3, 4 ], [ 0, 1, 2, 3, 4, 5 ] ]
+
+// pyramidg(8) 11 arrays
+![pyramidg(8)|420x66, 50%](upload://t5rsVAa88HNxqN8hZ4RlTLGbrRk.gif)
+[ [ 0, 1, 2, 3, 4, 5 ], [ 1, 2, 3, 4, 5 ], [ 2, 3, 4, 5 ], [ 3, 4, 5 ], [ 4, 5 ], [ 5 ], [ 4, 5 ], [ 3, 4, 5 ], [ 2, 3, 4, 5 ], [ 1, 2, 3, 4, 5 ], [ 0, 1, 2, 3, 4, 5 ] ]
+
+
+// pyramidg(9) 11 arrays
+![pyramidg(9)|420x66, 50%](upload://xzwBa1PUG28OVpEXRQo8PrWocIO.gif)
+[ [ 0 ], [ 0, 1 ], [ 0, 1, 2 ], [ 0, 1, 2, 3 ], [ 0, 1, 2, 3, 4 ], [ 0, 1, 2, 3, 4, 5 ], [ 1, 2, 3, 4, 5 ], [ 2, 3, 4, 5 ], [ 3, 4, 5 ], [ 4, 5 ], [ 5 ] ]
+
+// pyramidg(10) 11 arrays
+![pyramidg(10)|420x66, 50%](upload://2UNRdbSZXy47zsY5lJHBfArUpMd.gif)
+[ [ 5 ], [ 4, 5 ], [ 3, 4, 5 ], [ 2, 3, 4, 5 ], [ 1, 2, 3, 4, 5 ], [ 0, 1, 2, 3, 4, 5 ], [ 0, 1, 2, 3, 4 ], [ 0, 1, 2, 3 ], [ 0, 1, 2 ], [ 0, 1 ], [ 0 ] ]
+
+
+
 
 https://github.com/DarienBrito/Self_Similar/blob/master/1.Counting_123.scd
 https://composerprogrammer.com/teaching/supercollider/sctutorial/9.1%20Algorithmic%20Strategies.html
@@ -424,13 +475,15 @@ The length of the new Array.
 -> [ [ 0, 0 ], [ 0, 1 ], [ 0, 2 ], [ 0, 3 ], [ 0, 4 ], [ 0, 5 ], [ 1, 0 ], [ 1, 1 ], [ 1, 2 ], [ 1, 3 ], [ 1, 4 ], [ 1, 5 ], [ 2, 0 ], [ 2, 1 ], [ 2, 2 ], [ 2, 3 ], [ 2, 4 ], [ 2, 5 ], [ 3, 0 ], [ 3, 1 ], [ 3, 2 ], [ 3, 3 ], [ 3, 4 ], [ 3, 5 ], [ 4, 0 ], [ 4, 1 ], [ 4, 2 ], [ 4, 3 ], [ 4, 4 ], [ 4, 5 ], [ 5, 0 ], [ 5, 1 ], [ 5, 2 ], [ 5, 3 ], [ 5, 4 ], [ 5, 5 ] ]
 
 
+
+
 // Start/
 (
 p = Pbindef(\forward,
     \instrument, \DcOuts,
 	\stretch,4,
 	\legato,1,
-	\bus,Pseq((0..5),1) + ~lightsBus.index,
+	\bus,Pseq((0..5).stutter(4),1) + ~lightsBus.index,
     \amp,1,
     \env, Pseq([
 		[Env.perc(0.001,0.999,1,4)]

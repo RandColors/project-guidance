@@ -224,7 +224,35 @@ if you like to make .gif files from your pattern, here the code:
 
 ## first things first, default words: ##
 
+Definition of a "word" in this context.
+- a word is made by a sequence.
+- a word need an Envelope. 
+- a word has a non inf duration.
     
+Dictionary of seqs
+Dictionary of Envelope
+Dictionary of duration
+Dictionary of words
+Dictionary of phrases(Pdict? .. see how.. ?!)
+
+    
+// Exploring the Envelopes
+    (
+    ~dEnv = Dictionary.new;
+    
+    	~dEnv.add(\perc -> Env.perc(0.001,0.999,1,-4));
+    	~dEnv.add(\percrev ->  Env.perc(0.999,0.001,1,4));
+    )
+
+    // write to a .png on your desktop
+    ~aplot = ~dEnv[\percrev].plot(bounds: Rect(left: 0, top: 400, width: 600, height: 400));
+    i = Image.fromWindow(~aplot.parent, ~aplot.interactionView.bounds);
+    i.write("~/desktop/\percrev.png".standardizePath);
+    i.free;
+
+
+
+
     Pbindef(\forward,
     \instrument, \DcOuts,
     	\stretch,4,
@@ -232,7 +260,7 @@ if you like to make .gif files from your pattern, here the code:
     \bus,Pseq((0..5),inf) + ~lightsBus.index,
     \amp,1,
     \env, Pseq([
-    		[Env.perc(0.001,0.999,1,4)]
+    		[~dEnv[\perc]]
     ],inf),
     	\dur, Pseq([1/4],inf),
     \finish, ~beatsToSeconds
@@ -329,6 +357,13 @@ if you like to make .gif files from your pattern, here the code:
 
 ## more methods
 
+if you would like to plot the array manipuleted just to have another graphic way to understand what is going on.
+
+    ~aplot = [0,2,3,2,1,0.4].plot;
+    i = Image.fromWindow(~aplot.parent, ~aplot.interactionView.bounds);
+    i.write("~/desktop/test.png".standardizePath);
+    i.free;
+    
 **.powerset
 Returns all possible combinations of the array's elements.**
 
