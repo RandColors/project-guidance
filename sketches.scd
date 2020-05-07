@@ -8,7 +8,7 @@
 Add n_times = I mean how many times a seq can be repeated
 make everything inside a a dictionary, maybe you should put eery pattern in a function with n_times, metronomes sequences..
 Change the SynthDef adding another envelope that is for crescendos etc, long envelopes over the pattern
-How to change metro.beat?
+
 How to quant to next bar? quant:[~metro.base.timeToNextBeat,0]
 How to add a GUI for the env where it's possible to change dynamically the curves
 
@@ -298,7 +298,7 @@ Pbindef(\palindromo,
     \instrument, \DcOuts,
 	\stretch,4,
 	\legato,1,
-    \bus,Pseq((0..5).mirror1,inf) + ~lightsBus.index,
+    \bus,Pseq((0..5).mirror1,1) + ~lightsBus.index,
     \amp,1,
     \env, Pseq([
 		[Env.perc(0.001,0.999,1,4)]
@@ -1430,3 +1430,189 @@ https://youtu.be/AEpn6HvQSKg?t=115
 
 0,1,2 off off off forward
 off off off, 3, 4, 5
+// drop same
+(
+    Pbindef(\forwback,
+  \instrument, \DcOuts,
+    	\stretch,4,
+    	\legato,1,
+	\bus,Pseq((0..5)++(4..0),1) + ~lightsBus.index,
+    \amp,1,
+    \env, Pseq([
+    		[Env.perc(0.001,0.999,1,4)]
+    ],inf),
+	\dur,Prand([1/32,Rest(1/16)],inf),
+    \finish, ~beatsToSeconds
+    ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+)
+
+    Pbindef(\forwback).stop;
+    Pbindef(\forwback).clear;
+
+
+
+
+https://youtu.be/AEpn6HvQSKg?t=123
+
+0,1, superfast like 32nd or more
+tutti 1/4 on off on
+
+
+(
+    Pbindef(\wordtatataa,
+    \instrument, \DcOuts,
+    \legato,1,
+    \stretch,4,
+    \bus,Pseq((0..1)++[(0..5)],1) + ~lightsBus.index,
+    \amp,1,
+    \env, Pseq([
+    [Env.perc(0.001,0.999,1,-4)]
+    ],inf),
+	\dur, Pseq((1/32!2)++(1/8!1),inf),
+    \finish, ~beatsToSeconds
+    ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+)
+
+
+Pbindef(\wordtatataa).stop;
+Pbindef(\wordtatataa).clear;
+
+
+
+
+https://youtu.be/AEpn6HvQSKg?t=130
+last to first
+super fast
+on off off on on off
+off off on off off on
+that arrives at
+off/on alternating
+
+super fast
+on off off on on off
+off off on off off on
+off/on alternating
+tutti
+
+https://youtu.be/AEpn6HvQSKg?t=145
+0,1,2 off off off forward
+off off off, 3, 4, 5
+0,1,2 off off off forward
+off off off, 3, 4, 5
+0,1, superfast like 32nd or more
+tutti 1/4 on off Decay
+
+https://youtu.be/AEpn6HvQSKg?t=164
+seq tutti on -> off -> on "long" *n-times
+
+https://youtu.be/AEpn6HvQSKg?t=177
+turn on all from 0 to 5
+tutti like 80% of the intensity
++20% like if there was a sinewave + offset
+something like that : https://youtu.be/JBRlZ94J-Jk
+
+on off tutti
+
+
+https://youtu.be/AEpn6HvQSKg?t=195
+
+on off tutti
+on off tutti + offset
+seq rand on/off forward 1 element to more elements
+tutti
+
+
+https://youtu.be/AEpn6HvQSKg?t=210
+seq forward con env exp
+
+https://youtu.be/AEpn6HvQSKg?t=222
+single element staccato on:
+- first group of three forward
+- second group of three back
+
+tutti
+
+- first group of three tutti
+- second group of three tutti
+
+
+https://youtu.be/AEpn6HvQSKg?t=237
+back
+back
+forward forward
+back & forward contemporary
+tutti
+
+https://youtu.be/AEpn6HvQSKg?t=271
+tutti
+seq on off off back
+first and last Repetition of the same light
+(0,5)*4times
+(1,4)*4times
+(2,3)*4times
+(1,4)*4times
+(0,5)*4times
+
+use those two phrases like intermezzo
+start seq back with offset on 2 -> 0
+start seq forward with offset on 3 -> 5
+you can play those simultaneously
+on on off on off on
+
+https://youtu.be/AEpn6HvQSKg?t=333
+seq forward and back group of adj
+
+https://youtu.be/AEpn6HvQSKg?t=337
+https://youtu.be/AEpn6HvQSKg?t=356
+on off tutti exp
+seq on off offset forward
+on off tutti exp
+seq on off offset forward
+central group (1,2,3)exp
+group 5,4 and 0,1 staccato exp
+central group (1,2,3)exp
+group 5,4 and 0,1 staccato exp
+seq forward and back group of 2 elements * ntimes
+central group (1,2,3)
+group 5,4 and 0,1 staccato
+on off tutti staccto 32nd
+seq forward and back group of 2 elements * ntimes
+from first and last to center turning all on with ENV Exp
+seq forward and back group of 2 elements * ntimes
+- first group of three tutti 32nd
+- second group of three tutti 32nd
+
+https://youtu.be/AEpn6HvQSKg?t=443
+on off tutti exp
+on off tutti exp offset
+offset on off tutti log from max to black
+tutti exp to black
+
+https://youtu.be/AEpn6HvQSKg?t=450
+https://youtu.be/AEpn6HvQSKg?t=473 slowed down.
+0,5 - 1,4 - 2,3
+seq forward super fast 2 32nd per light
+- first group of three tutti 16nd
+- second group of three tutti 16nd
+- first group of three tutti 16nd
+- second group of three tutti 16nd
+tutti
+on off tutti
+on off offset
+tutti / black *2
+- first group of three tutti 16nd
+- second group of three tutti 16nd
+
+tutti pulsating 70% + 30%  8th or 16th
+
+tutti pulsating 70% + 30%  32nd * 4
+couple of two forward
+tutti
+seq forward one light
+
+https://youtu.be/AEpn6HvQSKg?t=499
+on off tutti + offset
+tutti exp
+couple of two forward
+tutti exp
+seq forward one light
