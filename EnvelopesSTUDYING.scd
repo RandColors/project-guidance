@@ -3,6 +3,31 @@
 
 */
 
+// fancy shit
+(
+a  = [0.9, 0.0, 0.0, 0.7, 0.0, 0.2, 0.0, 0.7, 0.0, 0.0].plot(bounds: Rect(left: 0, top: 400, width:800 /*Window.screenBounds.width*/, height:600 /*Window.screenBounds.height*/),discrete: false, separately: false,numChannels:1);
+
+a.setProperties(
+    \fontColor, Color.red,
+    \plotColor, Color.white,
+    \backgroundColor, Color.black,
+    \gridColorX, Color.gray,
+    \labelX, "time"
+);
+
+a.plotMode =\plines; a.refresh;
+/*
+a.plotMode = \points; a.refresh;
+a.plotMode = \levels; a.refresh;
+a.plotMode = \steps; a.refresh;
+a.plotMode = \linear; a.refresh;
+a.plotMode = \bars; a.refresh;
+*/
+a.refresh;
+)
+
+
+
 (
 ~dEnv = Dictionary.new;
 
