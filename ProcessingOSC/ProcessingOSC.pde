@@ -46,7 +46,7 @@ void setup(){
 
 
 void draw(){
-  //background(0);
+  background(0);
 
   //fai la richiesta di dati a frameRate con .send
   OscMessage msg = new OscMessage("/getAmps");
@@ -56,33 +56,33 @@ void draw(){
  noStroke();
 
         // channel 1
-   fill(153,255*amp1,0);
-   rect(0,0,width/6,height*amp1);
+   fill(153, 255*amp1, 0);
+      rect(0, 0, width/6, height*amp1);
    dmxOutput.set(1, int(amp1*255.0));
 
        // channel 2
-   fill(153,255*amp2,0);
-   rect(66,0,width/6,height*amp2);
+    fill(153, 255*amp2, 0);
+     rect(70, 0, width/6, height*amp2);
    dmxOutput.set(2, int(amp2*255.0));
 
         // channel 3
-   fill(153,255*amp3,0);
-   rect(132,0,width/6,height*amp3);
+      fill(153, 255*amp3, 0);
+      rect(140, 0, width/6, height*amp3);
    dmxOutput.set(3, int(amp3*255.0));
 
            // channel 4
-   fill(153,255*amp4,0);
-   rect(198,0,width/6,height*amp4);
+      fill(153, 255*amp4, 0);
+      rect(210, 0, width/6, height*amp4);
    dmxOutput.set(4, int(amp4*255.0));
 
            // channel 5
-   fill(153,255*amp5,0);
-   rect(264,0,width/6,height*amp5);
+      fill(153, 255*amp5, 0);
+      rect(280, 0, width/6, height*amp5);
    dmxOutput.set(5, int(amp5*255.0));
 
            // channel 6
-   fill(153,255*amp6,0);
-   rect(330,0,width/6,height*amp6);
+     fill(153, 255*amp6, 0);
+      rect(350, 0, width/6, height*amp6);
    dmxOutput.set(6, int(amp6*255.0));
 }
 
