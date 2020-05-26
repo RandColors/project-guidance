@@ -1618,3 +1618,160 @@ p.stop;
 
 
 Pclutch(Pseq([1, 2, 3, 4, 5], 3), Pseq([0, 0, 1, 0, 0, 0, 1, 1])).asStream.nextN(10);
+
+http://doc.sccode.org/Tutorials/A-Practical-Guide/PG_02_Basic_Vocabulary.html
+
+// Study well these  Primary Patterns
+// here it's clearer
+
+https://help.sccode.org/Streams-Patterns-Events/A%20Practical%20Guide/PG_02_Basic_Vocabulary.html
+
+
+Pseq(list, repeats, offset)
+Play through the entire list repeats times. Like list.do.
+Prand(list, repeats)
+Choose items from the list randomly (same as list.choose).
+Pxrand(list, repeats)
+Choose randomly, but never repeat the same item twice in immediate succession.
+Pshuf(list, repeats)
+Shuffle the list in random order, and use the same random order repeats times. Like list.scramble.
+Pwrand(list, weights, repeats)
+Choose randomly, according to weighted probabilities (same as list.wchoose(weights)).
+Pseries(start, step, length)
+Arithmetic series (addition).
+Pgeom(start, grow, length)
+Geometric series (multiplication).
+Pwhite(lo, hi, length)
+Random numbers, equal distribution ("white noise"). Like rrand(lo, hi) .
+Pexprand(lo, hi, length)
+Random numbers, exponential distribution. Like exprand(lo, hi) .
+Pbrown(lo, hi, step, length)
+Brownian motion, arithmetic scale (addition).
+Pfunc(nextFunc, resetFunc)
+Get the stream values from a user-supplied function.
+Pfuncn(func, repeats)
+Get values from the function, but stop after repeats items.
+Prout(routineFunc)
+Use the function like a routine. The function should return values using .yield or .embedInStream.
+
+Pslide(list, repeats, len, step, start, wrapAtEnd)
+Play overlapping segments from the list.
+
+Pslide(#[1, 2, 3, 4, 5, 6, 7, 8], 10, 3, 1, 0, false).asStream.all;
+
+// or, to show the segments as separate arrays
+Pslide(#[1, 2, 3, 4, 5, 6, 7, 8], 10, 3, 1, 0, false).clump(3).asStream.all;
+
+// Flock of Seagulls!
+(
+p = Pbind(
+    \degree, Pslide((-6, -4 .. 12), inf, 3, 1, 0),
+    \dur, Pseq(#[0.1, 0.1, 0.2], inf),
+    \sustain, 0.15
+).play;
+)
+p.stop;
+
+//ddwPAtterns
+
+Quarks.gui
+(
+p = Pbind(
+    \degree, Pseries(-7, 1, 15),
+    \dur, Pgeom(0.5, 0.89140193218427, 15)
+).play;
+)
+/*fromEndpoints, for both Pseries and Pgeom that performs this calculation.*/
+
+p = Pgeom.fromEndpoints(0.5, 0.1, 15);    // error if ddwPatterns not installed
+p.postcs;
+
+(
+p = Pbind(
+    \degree, Pseries(-7, 1, 15),
+	\dur, Pgeom.fromEndpoints(1/8, 1/64, 22).trace
+).play;
+)
+
+// how to make accelerandi using a beats?
+// in 1 bar make 70 notes starting from 1/8 to whatever it
+// will be to rich the note
+
+// There are a bunch of random Patterns that have to be explored
+https://doc.sccode.org/Guides/Randomness.html
+
+(
+Pbind(\note, Prand([ 0, 2, 4 ], inf),
+    \dur, 0.2
+).play;
+)
+​
+(
+Pbind(
+    \note, Pxrand([ 0, 2, 4 ], inf),
+    \dur, 0.2
+).play;
+)
+​
+(
+Pbind(
+    \note, Pwrand([ 0, 2, 4 ], [0.1, 0.3, 0.6], inf),
+    \dur, 0.2
+).play;
+)
+​
+(
+Pbind(
+    \midinote, Pwhite(48, 72, inf),
+    \dur, 0.2
+).play;
+)
+​
+(
+Pbind(
+    \midinote, Pbrown(48, 72, 5, inf),
+    \dur, 0.2
+).play;
+)
+​
+(
+Pbind(
+    \midinote, Pgbrown(48, 72, 0.5, inf).round,
+    \dur, 0.2
+).play;
+)
+
+
+(
+
+SynthDef(\trig_demo, { |freq, gate = 1, t_trig = 1|	// t_trig here
+
+	var	env = Decay2.kr(t_trig, 0.01, 0.1),
+
+		sig = SinOsc.ar(freq, 0, env)
+
+			* Linen.kr(gate, 0.01, 0.1, 0.1, doneAction: 2);
+
+	Out.ar(0, sig ! 2)
+
+}).add;
+
+)
+
+
+
+(
+
+p = Pmono(\trig_demo,
+
+	\freq, Pexprand(200, 800, inf),
+
+	\trig, 1,	// note that this is NOT t_trig -- just \trig
+
+	\delta, Pn(Pexprand(1/2, 1/16, 20))
+
+).play;
+:
+)
+
+

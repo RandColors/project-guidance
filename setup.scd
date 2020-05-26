@@ -18,7 +18,7 @@ OSCdef(\processing).disable // pause
 OSCdef(\processing).enable // resume
 
 // set tempo
-~metro.setBpm(60,4);
+~metro.setBpm(120,4);
 ~metro.playClick;
 ~metro.stopClick;
 ~metro.print;
