@@ -1,3 +1,27 @@
+// you should consider to use panola
+
+
+~ex = Panola.new("(c4_16 c c c c4_16. c c c c4_16.. c c c )*1"); // 16th  16.th 16..th
+~ex = Panola.new("(c4_16)*12\\tempo[180] c_4/3 c c ");
+
+
+(
+Pdef(\a, Pbind(\instrument, \DcOuts,
+	\midinote, ~ex.midinotePattern,
+	\dur, ~ex.durationPattern,
+	\amp, ~ex.volumePattern,
+	\tempo, ~ex.tempoPattern,
+	\lag, ~ex.lagPattern,
+	\legato, 1,
+	\stretch,4,
+	\bus,Pseq([(0..2)],inf) + ~lightsBus.index,
+    \env, Pseq([[Env.perc(0.001,0.999,1,4)]],inf),
+	\finish, ~beatsToSeconds
+)
+).play(~metro.base ,quant:~metro.base.beatsPerBar);
+)
+
+
 (
 ~getDurAmpPairs = {|spec|
 
@@ -90,7 +114,7 @@ Pbindef(\drumtranscript).clear.play;//restart it from scretch
 \instrrument, \default,
 	\freq, Pseq((75!1)++(63!(~metro.base.beatsPerBar.asFloat-1)),inf).midicps,
 	\sustain, 1,
-\dur, 1).play(~metro.nomes[4] ,quant:~metro.nomes[0].beatsPerBar);
+\dur, 1).play(~metro.nomes[4] ,quant:~metro.nomes[4].beatsPerBar);
 )
 
 (
