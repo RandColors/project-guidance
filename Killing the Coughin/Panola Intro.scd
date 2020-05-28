@@ -30,7 +30,7 @@ Panola.new("a4");
 // instead of calling a single "asPbind" you can also extract all information separately
 // like this you have optimal flexibility in what you want to use from Panola
 (
-~ex = Panola.new("c4 d e f g a b c5");
+~ex = Panola.new("c4_16\\tempo[120] d e f g a b c5");
 ~pat = Pbind(\instrument, \default,
 	\midinote, ~ex.midinotePattern,
 	\dur, ~ex.durationPattern,
@@ -62,7 +62,7 @@ Panola.new("a4");
 // Here's four quarter notes (_4) followed by four eighth notes (_8).
 (
 ~ex = Panola.new("(c4_5\\pdur[0.1] d e_7 f g_11 a b c5 c5_8. b4 a g f_16 e d_ c4)*10");
-//~player = ~ex.asPbind.play;
+~player = ~ex.asPbind.play;
 )
 
 

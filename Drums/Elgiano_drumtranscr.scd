@@ -1,8 +1,8 @@
 // you should consider to use panola
+// the problem of using panola is that you can't use your way to work with metros.
 
-
-~ex = Panola.new("(c4_16 c c c c4_16. c c c c4_16.. c c c )*1"); // 16th  16.th 16..th
-~ex = Panola.new("(c4_16)*12\\tempo[180] c_4/3 c c ");
+~ex = Panola.new("(c4_16\\tempo[120] c c c c4_16. c c c c4_16.. c c c )*1"); // 16th  16.th 16..th
+~ex = Panola.new("c4_16\\tempo[120] c c c  c_4/3 c c ");
 
 
 (
@@ -13,14 +13,23 @@ Pdef(\a, Pbind(\instrument, \DcOuts,
 	\tempo, ~ex.tempoPattern,
 	\lag, ~ex.lagPattern,
 	\legato, 1,
-	\stretch,4,
 	\bus,Pseq([(0..2)],inf) + ~lightsBus.index,
     \env, Pseq([[Env.perc(0.001,0.999,1,4)]],inf),
 	\finish, ~beatsToSeconds
 )
-).play(~metro.base ,quant:~metro.base.beatsPerBar);
+).play;
 )
 
+
+~ex = Panola.new(
+	"(c4_4@vol[0.0])*3 c4@vol[1.0]"
+	"c_4/3@vol[1.0] (c_4/6@vol[0.4])*2 c_4/3"
+
+);
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////
 
 (
 ~getDurAmpPairs = {|spec|
@@ -47,16 +56,30 @@ Pdef(\a, Pbind(\instrument, \DcOuts,
 
 
 // set tempo
-~metro.setBpm(60);
+~metro.setBpm(120);
 ~metro.playClick;
 ~metro.stopClick;
 ~metro.print;
 
 (
 Ndef(\monitor){
-    var trigs = In.kr(~lightsBus,6);
-	Mix(Compander.ar( Pan2.ar( SinOsc.ar(72.midicps)*Decay2.kr(trigs.linlin(0.3,1.0,0.0,1.0), 0.02,0.1)),[-1,1])/40);
+    var trigs = InBus.kr(~lightsBus, 3, 0);
+	Mix(Compander.ar( Pan2.ar( SinOsc.ar(72.midicps)*Decay2.kr(trigs.linlin(0.3,1.0,0.0,1.0), 0.02,0.1),
+		1-trigs
+	),[-1,1])/40);
 }.play;
+)
+
+(
+Ndef(\monitora){
+    var trigs =  InBus.kr(~lightsBus, 2, 3);
+	Mix(Compander.ar( Pan2.ar( BPF.ar(WhiteNoise.ar(),1500)*Decay2.kr(trigs.linlin(0.3,1.0,0.0,1.0), 0.02,0.1)),[-1,1])/40);
+}.play;
+)
+
+(
+~full =	~bars13_14++~bars15_17++~bars18_19++~bars20_21++~bars22_23++~bars24_26++~bars27_34++
+~bars35_38++~bars39_41++~bars42_43++~bars44_46++~bars47_49++~bars50_52++~bars53_55;
 )
 
 (
@@ -66,7 +89,7 @@ Pbindef(\drumtranscript,
 	\legato,1,
 	\bus,Pseq([(0..2)],inf) + ~lightsBus.index,
     \env, Pseq([[Env.perc(0.001,0.999,1,4)]],inf),
-	[\dur,\amp],Pseq(~bars13_14,inf),
+	[\dur,\amp],Pseq(~full,1),
     \finish, ~beatsToSeconds
 ).play(~metro.base ,quant:~metro.base.beatsPerBar);
 
@@ -75,11 +98,11 @@ Pbindef(\d,
     \instrument, \DcOuts,
 	\stretch,4,
 	\legato,1,
-	\bus,Pseq([(3..5)],inf) + ~lightsBus.index,
+	\bus,Pseq((3..5),inf) + ~lightsBus.index,
     \env, Pseq([[Env.perc(0.001,0.999,1,4)]],inf),
-	[\dur,\amp],Pseq(~bars13_14,inf),
+	[\dur,\amp],Pseq(~full,),
     \finish, ~beatsToSeconds
-).play(~metro.nomes[4] ,quant:~metro.nomes[0].beatsPerBar);
+).play(~metro.nomes[4] ,quant:~metro.base.beatsPerBar);
 )
 
 
@@ -127,15 +150,17 @@ Pbindef(\drumtranscript).clear.play;//restart it from scretch
 
 (
 var flam,
-t, t_acc, t_accflam, t_flam,
-ss, ss_acc, ss_accflam, ss_flam,
-n, n_acc, n_flam, n_accflam,np_acc, np_inner, np_acc_inner,
+t, t_acc, t_accflam, t_flam, t_rest,
+ss, ss_acc, ss_accflam, ss_flam, ss_rest,
+n, n_acc, n_flam, n_accflam, n_rest,
+np_acc, np_inner, np_acc_inner,
 c, c_flam, c_accflam, c_acc,c_ss, c_ss_acc,
-si, si_acc,
+si, si_acc, si_accflam, si_flam, si_rest,
 z, z_acc,
-o, o_acc,
+o, o_acc, o_accflam, o_flam, o_rest,
 q, q_acc, q_accflam, q_flam,
-qt, qt_acc, qt_accflam, qt_flam;
+qt, qt_acc, qt_accflam, qt_flam
+;
 
 flam  = 1/128;
 t_accflam = (((1/12 - flam):1)!1);
@@ -145,6 +170,7 @@ ss_flam = ((1/24 - flam)!1);
 
 t = (1/12!1);
 t_acc = ((1/12:1)!1);
+t_rest =  ((1/12:0)!1);
 
 ss = (1/24!1);
 ss_acc = ((1/24:1)!1);
@@ -172,12 +198,19 @@ c_ss_acc = ((1/20 :1)!1);
 // 16th
 si = (1/16!1);
 si_acc = ((1/16 :1)!1);
+si_flam = ((1/16 - flam)!1);
+si_accflam = (((1/16 - flam):1)!1);
+si_rest =  ((1/16 :1)!1);
 
 // 8th
 o = (1/8!1);
 o_acc = ((1/8 :1)!1);
+o_flam = ((1/8 - flam)!1);
+o_accflam = (((1/8 - flam):1)!1);
+o_rest =  ((1/8 :1)!1);
 
-//Z
+
+//Z z!32 = o
 z = (1/256!1);
 z_acc = ((1/256 :1)!1);
 
@@ -254,13 +287,6 @@ qt_accflam = (((1/3 - flam):1)!1);
 
 ].collect(~getDurAmpPairs.(_)).flatten;
 
-~bars24_26 = [
-	[ss_acc,ss,ss_acc,ss!21].flat,
-	[ss!24].flat,
-
-	[si!4,si_acc,si!3,o!2,z!256].flat,
-
-].collect(~getDurAmpPairs.(_)).flatten;
 
 ~bars27_34 =[
 	[1/4,(3/4 :0)],
@@ -281,7 +307,9 @@ qt_accflam = (((1/3 - flam):1)!1);
 	[n_acc!3,np_acc,n_acc!3].flat
 	].collect(~getDurAmpPairs.(_)).flatten;
 
-~bars39_41 =[
+
+
+~bars42_43 =[
 	[np_acc,n_acc!3,np_acc].flat,
 	[n_acc!3,np_acc,n_acc!3].flat,
 
@@ -290,12 +318,11 @@ qt_accflam = (((1/3 - flam):1)!1);
 
 	].collect(~getDurAmpPairs.(_)).flatten;
 
-~bars42_43 =[
-	[np_acc,n_acc!3,np_acc].flat,
-	[n_acc!3,np_acc,n_acc!3].flat,
 
-	[np_acc,n_acc!6].flat,
-	[q_acc,flam,q_accflam].flat,
+~bars44_46 =[
+	[t_acc,t!2,t_acc,ss!4,t_acc,ss!4,t_acc,ss!4].flat,
+	[t_acc!2, si_acc, si!6, si_acc, si, ss!6, t_acc, t].flat,
+	[si_acc, si,si_acc, si, t, si!2, t, t_acc].flat,
 
 	].collect(~getDurAmpPairs.(_)).flatten;
 
@@ -312,16 +339,25 @@ qt_accflam = (((1/3 - flam):1)!1);
 	].collect(~getDurAmpPairs.(_)).flatten;
 
 ~bars50_52 =[
-	[o_acc,ss!4].flat,
-	[o_acc,o].flat,
-	[n_acc,n!5,n_acc,n!2].flat,
-
-	[o_acc,o,o_acc,ss!4,o,si_acc!2,si!4,ss_acc,ss!5].flat, // 5/4
-	[o_acc,o,o_acc,si!2,qt_acc!3].flat,
-
+	[o_acc,o!2,o_acc,o,flam,o_accflam,o!2,flam,ss_acc!2,o].flat,
+	[flam,o_accflam,o!2,flam,si_accflam,si_acc,o,si_acc,si,o!2,o_acc,z!32].flat,
+	[o,flam,o_accflam,o,flam,o_accflam,flam,o_accflam,flam,o_accflam,o_rest,flam,o_accflam,z!32].flat,
 	].collect(~getDurAmpPairs.(_)).flatten;
 
+
+~bars53_55 = [
+	[o,o_acc,o_rest,o_acc,o_rest,o_acc!2,o].flat,
+	[t_acc,ss!4,t_acc,ss!4,t_acc,ss!4,t_acc,ss!4].flat,
+	[o_acc!2,(3/4:0)].flat,
+	[o_acc!2,(5/4:0)].flat,
+
+].collect(~getDurAmpPairs.(_)).flatten;
+
+
+
 )
+
+
 
 
 
