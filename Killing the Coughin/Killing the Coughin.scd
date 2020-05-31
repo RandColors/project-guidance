@@ -99,10 +99,11 @@ lst.debug("after pop");
 (
 [1,2,3].doAdjacentPairs {
 	| el1, el2, idx |
-	("pair (" + el1 + "," + el2 + ") visited at index" + idx).postln;
+	("[" + el1 + "," + el2 + "] ").postln;
 }
 )
-
+a = [1, 2, 3]; b = [12, 3, 4, 5];
+union(a, b)
 // multiline strings
 (
 var f = "a"

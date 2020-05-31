@@ -1,3 +1,16 @@
+La frazione ha come numeratore il numero
+di note del gruppo irregolare e come denominatore il numero di note che normalmente occupa
+Capitolo 2: Notazione comunemente utilizzata 27
+la stessa durata. Per le terzine ci sono tre note invece di due, quindi una terzina ha 3/2 come
+frazione:
+\relative {
+\tuplet 3/2 { f''8 g a }
+\tuplet 3/2 { c8 r c }
+\tuplet 3/2 { f,8 g16[ a g a] }
+\tuplet 3/2 { d4 a8 }
+}
+
+
 // you should consider to use panola
 // the problem of using panola is that you can't use your way to work with metros.
 
@@ -149,6 +162,17 @@ Pbindef(\drumtranscript).clear.play;//restart it from scretch
 
 
 (
+// abbellimenti flam or drag
+// tutte le suddivisioni di una nota
+// tutte le pause
+// accenti, note intensità normale, ghost
+// possibilità di scalare i valori di una sezione rispetto ad un inviluppo d'ampiezza generale
+// scrivibile da pmono ?
+// dictionary di simboli per le diverse variabili
+// possibilità di applicare ripetizioni di accenti ogni n elements
+
+|----------------|
+
 var flam,
 t, t_acc, t_accflam, t_flam, t_rest,
 ss, ss_acc, ss_accflam, ss_flam, ss_rest,
