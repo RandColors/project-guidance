@@ -52,8 +52,43 @@ m.analyzeCCTracks
 m.volumeEvents(channel: 0, track:0)
 m.noteEvents(channel:0, track:0)
 
+m.midiEvents
+
+.midiEvents = value
+an array containing all MIDI events as arrays. Format:
+[ trackNumber, absTime, type, channel, val1, val2 ]
+
+val 2 è velocity
+
+
+m.noteSustainEvents(channel:0, track:0)
+
+x[0].postcs;
+x[0].add(100).postcs;
+x.size;
+
+(
+var a,f;
 x = m.generatePatternSeqs.flatten.debug("midifile: ");
-x[4]
+x.size.do({ |i|
+
+	a = m.noteSustainEvents(channel:0, track:0).wrapAt(i).wrapAt(5);
+	f = x[i].add(a).debug("midinote, dur, velocity: ");
+
+});
+)
+
+
+});
+
+
+x = [ 1, 2, 3, "foo", 'bar' ];
+y = x.wrapExtend(9);
+x.postln;
+y.postln;
+y = [ 1, 2, 3 ];
+y.clipAt(1).postln;
+
 x.size;
 // velocity
 (

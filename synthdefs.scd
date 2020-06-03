@@ -8,7 +8,7 @@ SynthDef(\bleep,{ arg out=0, freq=440, amp=1.0;
 
 
 // add \amp arg to DcOuts
-SynthDef(\DcOuts){|durSeconds=1, bus=0, amp =1|
+SynthDef(\DcOuts){|durSeconds=1, bus=0, amp =1 ,t|
     var env = \env.kr(Env.newClear(8).asArray);
     var sig = EnvGen.kr(env, timeScale:durSeconds, doneAction:2);
     Out.kr(bus, sig*amp);
