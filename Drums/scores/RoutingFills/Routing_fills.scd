@@ -1,4 +1,4 @@
-m = SimpleMIDIFile.read( "C:/Users/ET/Desktop/cartella condivisa/Drums/scores/RoutingFills/Routing_fills.mid");
+m = SimpleMIDIFile.read("C:/Users/ET/Desktop/cartella condivisa/Drums/Konnakol/BAR01_Konnakol & Quads (Variation on).mid");
 
 // a sound
 (
@@ -32,8 +32,7 @@ x.size.do({ |i|
 // change the rest with Rest(0)
 (
 var	rest = Rest(0);
-~midinotes = [ 62, 62, 62, 62, 62, 62, 62, 62, 65, 65, 65, 65, 65, 65, 65, 65, 69, 69, 69, 69, 69, 69, 69, 69, 72, 72, 72, 72, 72, 72, 72, 72, 76, 76, 76, 76, 76, 76, 76, 76, 79, 79, 79, 79, 79, 79, 79, 79, 62, 65, 69, 72, 76, 79, 76, 72, 69, 65];
-
+~midinotes = [ 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62 ];
 ~a = (~a/127.0);
 )
 
@@ -88,6 +87,14 @@ Pbindef(\pureScore,
 
 
 
+Pswitch()
 
-
+(
+var a, b;
+a = Pseq([1, 2, 3], 2);
+b = Pseq([65, 76]);
+c = Pswitch([a, b, 800], Pseq([2, 2, 0, 1], inf));
+x = c.asStream;
+24.do({ x.next.postln; });
+)
 
