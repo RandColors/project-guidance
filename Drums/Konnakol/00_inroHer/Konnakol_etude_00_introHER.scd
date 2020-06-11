@@ -48,11 +48,13 @@ x.size.do({ |i|
 )
 
 // COPY AND PASTE the debug??
+midinote: : 62, 62, rest, 62, rest, 62, rest, 62, 62, rest, 62, rest, 62, rest, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62
+
 // change the rest with Rest(0)
 (
 var	rest = Rest(0);
 
-~midinotes =[  62, 62, rest, 62, rest, 62, rest, 62, 62, rest, 62, rest, 62, rest, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62 ];
+~midinotes =[ 62, 62, rest, 62, rest, 62, rest, 62, 62, rest, 62, rest, 62, rest, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62];
 
 ~a = (~a/127.0);
 )
@@ -98,19 +100,19 @@ The Main Idea for the arrangment are:
 
 // bars behaviours
 ~bar01_02 = ((8!4)++(7!6)++(10!1)++(9!2));
-
+//	~bar01_02 = ((9!62));
 
 Pbindef(\scoretolights,
     \instrument, \DcOuts,
 	\stretch,1,
 	\legato,1,
-	\amp, Pseq(~a,1),
-	\midinote, Pseq(~midinotes,1),
-	\dur, Pseq(~durs,1),
+	\amp, Pseq(~a,inf),
+	\midinote, Pseq(~midinotes,inf),
+	\dur, Pseq(~durs,inf),
     \env, Pseq([[Env.perc(0.001,0.999,1,4)]],inf),
-	\bus, Pswitch1([~zero,~one,~two,~three,~four,~five,
+	\bus, Pn(Pswitch1([~zero,~one,~two,~three,~four,~five,
 		~forward, ~reverse, ~palindrome, ~rand, ~allparall],
-	Pseq(~bar01_02))
+	Pseq(~bar01_02,inf)))
 	+ ~lightsBus.index,
 	 \finish, ~beatsToSeconds
   ).play(~metro.base ,quant:~metro.base.beatsPerBar);

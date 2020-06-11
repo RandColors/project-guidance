@@ -130,6 +130,9 @@ g.postln;
 // using events to store data and functions
 //
 
+
+// this is the core of the tut
+
 (
 var thing = (\data : 123);
 thing[\mysum] = {
