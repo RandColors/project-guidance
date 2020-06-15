@@ -118,116 +118,7 @@ var	rest = Rest(0);
 
 )
 
-// I'm the original
-(
-{
-~a.debug("~a: ");
-	0.1.wait;
 
-~durs.debug("~durs: ");
-	0.1.wait;
-
-~bar01_02lightsbehave.debug("~lightsbehav: ");
-	0.1.wait;
-//	~bar01_02lightsbehave.flatten(1);
-// scale the values for reading porpouses only when you will put in midi
-/*~bar01_02lightsbehave =	~bar01_02lightsbehave.collect({|in|
-		case
-		{in == 0} {62}
-		{in == 1} {65}
-		{in == 2} {69}
-		{in == 3} {72}
-		{in == 4} {76}
-		{in == 5} {79}
-	});*/
-
-		0.1.wait;
-
-//~midinotes = ~midinotes+~bar01_02lightsbehave;
-~midinotes.debug("~midinotes: ");
-
-}.fork;
-)
-(
-~original = [~a,~durs,~midinotes,~bar01_02lightsbehave];
-~original.flatten(1);
-~original.debug("~original: ");
-)
-
-// \retrograde  only retrograde melody, keep original rhythm and velocity
-(
-{
-~a_retrograde = ~a.reverse.debug("~a_retrograde: ");
-
-	0.1.wait;
-~durs.debug("~durs: ");
-
-	~bar01_02lightsbehave.debug("~lightsbehav: ");
-	0.1.wait;
-
-// scale the values for reading porpouses only when you will put in midi
-	~bar01_02lightsbehave.collect({|in|
-		case
-		{in == 0} {62}
-		{in == 1} {65}
-		{in == 2} {69}
-		{in == 3} {72}
-		{in == 4} {76}
-		{in == 5} {79}
-	});
-
-~midinotes = ~midinotes+~bar01_02lightsbehave;
-
-		0.1.wait;
-~midinotes_retrograde = ~midinotes.reverse;
-~midinotes_retrograde.debug("~midinotes_retrograde: ");
-
-}.fork;
-
-~retrograde = [~a_retrograde,~durs,~midinotes_retrograde,~bar01_02lightsbehave];
-~retrograde.debug("~retrograde: ");
-)
-
-// \retrograde_all retrograde melody, rhythm and velocity
-(
-{
-~a_retrograde_all = ~a.reverse.debug("~a_retrograde_all: ");
-	0.1.wait;
-~midinotes_retrograde_all = ~midinotes.reverse.debug("~midinotes_retrograde_all: ");
-	0.1.wait;
-~durs_retrograde_all = ~durs.reverse.debug("~durs_retrograde_all: ");
-}.fork;
-
-~retrograde_all = [~a_retrograde_all,~durs_retrograde_all,~midinotes_retrograde_all];
-~retrograde_all.debug("~retrograde_all: ");
-)
-
-// inside rest there is a problem ..
-
-(
-var a,invertFunc;
- invertFunc = ({| midinotes, around |
-	var oldnotes = midinotes;
-	var newnotes = (around*2) - oldnotes;
-	newnotes;
-});
-
-~midinotes_invert = invertFunc.value(~midinotes,7 ).debug("invert");
-
-)
-
-(
-~midinotes.do{
-	| el, idx |
-	("element" + el + "at index" + idx + "was visited.").postln;
-};
-)
-
-
-
-~a: : 0.63, 0.63, 0.63, 0.63, 0.63, 0.63, 0.63, 0.63, 0.63, 0.63, 0.63, 0.63, 0.63, 0.63, 0.63, 0.63, 0.63, 0.63, 0.63, 0.63, 0.63, 0.63, 0.63, 0.63, 0.63, 0.63, 0.63, 0.63, 0.63, 0.63, 0.63, 0.63, 0.63, 0.63, 1, 0.63, 0.63, 0.63, 1, 0.63, 0.63, 0.63, 0.63, 0.63, 1, 0.63, 0.63, 0.63, 0.63, 0.63, 1, 0.63, 0.63, 0.63, 0.63, 0.63, 1, 0.63, 0.63, 0.63, 0.63, 0.63, 0.63
-~midinotes: : 62, 62, Rest(0), 62, Rest(0), 62, Rest(0), 62, 62, Rest(0), 62, Rest(0), 62, Rest(0), 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62
-~durs: : 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 2, 2, 2, 2, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 2, 2, 2, 2, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 1.5
 
 /*
 The Main Ideas for the arrangment are:
@@ -307,6 +198,26 @@ The Main Ideas for the arrangment are:
  ).play(~metro.base ,quant:~metro.base.beatsPerBar);
 )
 
+//  mirror1
+(
+ Pbindef(\scoretolights,
+ 	\amp, Pseq(~a.mirror1,1),
+ 	\midinote, Pseq(~midinotes.mirror1,1),
+ 	\dur, Pseq(~durs.mirror1,1),
+ 	\bus,Pseq(~bar01_02lightsbehave.mirror1,1) + ~lightsBus.index,
+ ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+)
+
+//  mirror2
+(
+ Pbindef(\scoretolights,
+ 	\amp, Pseq(~a.mirror2,1),
+ 	\midinote, Pseq(~midinotes.mirror2,1),
+ 	\dur, Pseq(~durs.mirror2,1),
+ 	\bus,Pseq(~bar01_02lightsbehave.mirror2,1) + ~lightsBus.index,
+ ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+)
+
 // scramble
 (
  Pbindef(\scoretolights,
@@ -324,9 +235,6 @@ The Main Ideas for the arrangment are:
 .pyramid(patternType: 1)
 Return a new Array whose elements have been reordered via one of 10 “counting” algorithms. Run the examples to see the algorithms.
 */
-
-
-
 
 (
 // ~a.pyramid(algo): SIZE .... 3969
@@ -347,14 +255,15 @@ var algo = 5;
 
 
 (
-// SLIDE
+// SLIDE 6:2 bello
 var  a,b;
-a = 2;
-b = 1;
+a = 6;
+b = 2;
 ~a.slide(a, b).debug("~a.slide(a, b)"  );
 ~midinotes.slide(a, b).debug("~midinotes.slide(a, b) " );
 ~durs.slide(a, b).debug("~durs.slide(a, b) " );
 ~bar01_02lightsbehave.slide(a, b).debug("~bar01_02lightsbehave.slide(a, b) " );
+
 
  Pbindef(\scoretolights,
 	\amp, Pseq(~a.slide(a, b),1),
@@ -363,6 +272,75 @@ b = 1;
  	\bus,Pseq(~bar01_02lightsbehave.slide(a, b),1) + ~lightsBus.index,
  ).play(~metro.base ,quant:~metro.base.beatsPerBar);
 )
+
+
+
+(
+// Stutter bello
+var  a,b;
+a = 6;
+
+~a.stutter(a).debug("~a.stutter(a)"  );
+~midinotes.stutter(a).debug("~midinotes.stutter(a) " );
+~durs.stutter(a).debug("~durs.stutter(a) " );
+~bar01_02lightsbehave.stutter(a).debug("~bar01_02lightsbehave.stutter(a) " );
+
+
+ Pbindef(\scoretolights,
+	\amp, Pseq(~a.stutter(a),1),
+ 	\midinote, Pseq(~midinotes.stutter(a),1),
+ 	\dur, Pseq(~durs.stutter(a),1),
+ 	\bus,Pseq(~bar01_02lightsbehave.stutter(a),1) + ~lightsBus.index,
+ ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+)
+
+// sputter  decidi la posizione dove andrà ad agire
+
+(
+// Stutter bello
+var  a,b;
+a = 0.9;
+b = 100;
+
+~a.sputter(a, b).debug("~a.stutter(a)"  );
+~midinotes.sputter(a, b).debug("~midinotes.stutter(a) " );
+~durs.sputter(a, b).debug("~durs.stutter(a) " );
+~bar01_02lightsbehave.sputter(a, b).debug("~bar01_02lightsbehave.stutter(a) " );
+
+ Pbindef(\scoretolights,
+	\amp, Pseq(~a.sputter(a, b),1),
+ 	\midinote, Pseq(~midinotes.sputter(a, b),1),
+ 	\dur, Pseq(~durs.sputter(a, b),1),
+ 	\bus,Pseq(~bar01_02lightsbehave.sputter(a, b),1) + ~lightsBus.index,
+ ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+)
+
+
+// all tuplets
+(
+
+
+~a.size;
+[~a,~a.reverse].allTuples.flat.size.postln;//.size;
+[~midinotes,~midinotes.reverse].allTuples.flat;
+[~durs,1/64].allTuples.flat;
+[~bar01_02lightsbehave,~bar01_02lightsbehave.reverse].allTuples.flat
+/*//debug("~a.allTup(a)"  );
+~midinotes.sputter(a, b).debug("~midinotes.stutter(a) " );
+~durs.sputter(a, b).debug("~durs.stutter(a) " );
+~bar01_02lightsbehave.sputter(a, b).debug("~bar01_02lightsbehave.stutter(a) " );*/
+
+ Pbindef(\scoretolights,
+	\amp, Pseq([~a,~a.reverse].allTuples.flat,1),
+ 	\midinote, Pseq([~midinotes,~midinotes.reverse].allTuples.flat,1),
+ 	\dur, Pseq([~durs,1/64].allTuples.flat,1),
+ 	\bus,Pseq([~bar01_02lightsbehave,~bar01_02lightsbehave.reverse].allTuples.flat,1) + ~lightsBus.index,
+ ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+)
+
+
+
+
 
 
 // dividi e rendi midi file

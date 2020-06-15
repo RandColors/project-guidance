@@ -7,6 +7,9 @@ s.waitForBoot{
         "metro.scd",
     ]
     .do(_.loadRelative);
+
+	s.plotTree;
+	s.meter;
 }
 )
 
