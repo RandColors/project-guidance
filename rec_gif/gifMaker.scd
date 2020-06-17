@@ -476,6 +476,12 @@ The length of the new Array.
 
 
 
+										// write to a .png
+~aplot = (0..5).slide(5,2).plot(bounds: Rect(left: 0, top: 400, width: 600, height: 400),discrete: false, numChannels: 1, separately: false );
+i = Image.fromWindow(~aplot.parent, ~aplot.interactionView.bounds);
+i.write("~/desktop/slide(5,2).png".standardizePath);
+i.free;
+
 
 // Start/
 (

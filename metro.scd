@@ -36,7 +36,7 @@ Tempo curves (speeding up or slowing down)
     ~beatsPerBar = 4;
 
     // ratios are integer subdivision of base pulse (gati?)
-	~metroRatios = [0.25,0.5,0.75,1.25,1.5,1.75,2];
+	~metroRatios = [0.25,0.3,0.5,0.66, 0.75, 0.9, 1.0, 1.25, 1.33, 1.5, 1.6, 1.75, 2,3,4,5,6,7,8,9,10];
     //~metroRatios = ~metroRatios ++ ~metroRatios.reciprocal;
 
     // create metronomes

@@ -172,9 +172,6 @@ var	rest = Rest(0);
 }.fork;
 )
 
-
-
-
 )
 
 
@@ -215,6 +212,225 @@ The Main Ideas for the arrangment are:
  Pbindef(\scoretolights,
  	\instrument, \DcOuts,
  	\stretch,1,
+ 	\legato,1,
+ 	\amp, Pseq(~a,1),
+ 	\midinote, Pseq(~midinotes,1),
+ 	\dur, Pseq(~durs,1),
+	\env, Pseq(~bar01_02Envbehave,1),
+ 	\bus,Pseq(~bar01_02lightsbehave,1) + ~lightsBus.index,
+ 	\finish, ~beatsToSeconds
+ ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+)
+
+
+Pbindef(\scoretolights).stop
+///////////////////////////////////////////////////////////////////////////
+/////////////////////////      POLY      //////////////////////////////////
+///////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////
+(
+ Pbindef(\scoretolights,
+ 	\instrument, \DcOuts,
+ 	\stretch,1,
+ 	\legato,1,
+ 	\amp, Pseq(~a,inf),
+ 	\midinote, Pseq(~midinotes,inf),
+ 	\dur, Pseq(~durs,inf),
+	\env, Pseq(~bar01_02Envbehave,inf),
+ 	\bus,Pseq(~bar01_02lightsbehave,inf) + ~lightsBus.index,
+ 	\finish, ~beatsToSeconds
+ ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+
+
+
+
+ Pbindef(\scoretolights1,
+ 	\instrument, \default,
+ 	\stretch,1.33,
+ 	\legato,1,
+ 	\amp, Pseq(~a,inf)*0.5,
+	\midinote, Pseq([~midinotes.at(0)+7],inf),
+	\dur, Pseq([~durs.at(0)],inf),
+	\env, Pseq(~bar01_02Envbehave,inf),
+ 	\bus,Pseq(~bar01_02lightsbehave,inf) + ~lightsBus.index,
+ 	\finish, ~beatsToSeconds
+ ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+
+
+ Pbindef(\scoretolights2,
+ 	\instrument, \default,
+ 	\stretch,0.75,
+ 	\legato,1,
+ 	\amp, Pseq(~a,inf)*0.5,
+	\midinote, Pseq([~midinotes.at(0)],inf),
+	\dur, Pseq([~durs.at(0)],inf),
+	\env, Pseq(~bar01_02Envbehave,inf),
+ 	\bus,Pseq(~bar01_02lightsbehave,inf) + ~lightsBus.index,
+ 	\finish, ~beatsToSeconds
+ ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+)
+
+
+(
+ Pbindef(\scoretolights1,
+ 	\instrument, \default,
+ 	\stretch,1.33,
+ 	\legato,1,
+ 	\amp, Pseq(~a,inf)*0.5,
+	\midinote, Pseq([~midinotes.at(0)+7],inf),
+	\dur, Pseq([~durs.at(19)],inf),
+	\env, Pseq(~bar01_02Envbehave,inf),
+ 	\bus,Pseq(~bar01_02lightsbehave,inf) + ~lightsBus.index,
+ 	\finish, ~beatsToSeconds
+ ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+
+
+ Pbindef(\scoretolights2,
+ 	\instrument, \default,
+ 	\stretch,0.75,
+ 	\legato,1,
+ 	\amp, Pseq(~a,inf)*0.5,
+	\midinote, Pseq([~midinotes.at(0)],inf),
+	\dur, Pseq([~durs.at(0)],inf),
+	\env, Pseq(~bar01_02Envbehave,inf),
+ 	\bus,Pseq(~bar01_02lightsbehave,inf) + ~lightsBus.index,
+ 	\finish, ~beatsToSeconds
+ ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+)
+
+
+(
+ Pbindef(\scoretolights1,
+ 	\instrument, \default,
+ 	\stretch,1.33,
+ 	\legato,1,
+ 	\amp, Pseq(~a,inf)*0.5,
+	\midinote, Pseq(~midinotes+7,inf),
+	\dur, Pseq(~durs,inf),
+	\env, Pseq(~bar01_02Envbehave,inf),
+ 	\bus,Pseq(~bar01_02lightsbehave,inf) + ~lightsBus.index,
+ 	\finish, ~beatsToSeconds
+ ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+
+
+ Pbindef(\scoretolights2,
+ 	\instrument, \default,
+ 	\stretch,0.75,
+ 	\legato,1,
+ 	\amp, Pseq(~a,inf)*0.5,
+	\midinote, Pseq(~midinotes,inf),
+	\dur, Pseq(~durs,inf),
+	\env, Pseq(~bar01_02Envbehave,inf),
+ 	\bus,Pseq(~bar01_02lightsbehave,inf) + ~lightsBus.index,
+ 	\finish, ~beatsToSeconds
+ ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+)
+
+
+
+(
+// ~a.pyramid(algo): SIZE .... 3969
+// 10 from super caos to perodicity
+var algo = 1;
+~a.pyramid(algo).debug("~a.pyramid(algo)"  );
+~midinotes.pyramid(algo).debug("~midinotes.pyramid(algo) " );
+~durs.pyramid(algo).debug("~durs.pyramid(algo) " );
+~bar01_02lightsbehave.pyramid(algo).debug("~bar01_02lightsbehave.pyramid(algo) " );
+
+
+Pbindef(\scoretolights,
+	\stretch, Pseq((0.66!(16)++
+		Prand([
+			//Pseq((0.165!(~midinotes.size))),
+			Pseq((0.33!(~midinotes.size)),12),
+	],1)),inf),
+	\amp, Pseq(~a.pyramid(algo),1),
+	\midinote, Pseq(~midinotes.pyramid(algo),1),
+	\dur, Pseq(~durs.pyramid(algo),1),
+	\env, Pseq(~bar01_02Envbehave.pyramid(algo),1),
+	\bus,Pseq(~bar01_02lightsbehave.pyramid(algo),1) + ~lightsBus.index,
+).play(~metro.base ,quant:~metro.base.beatsPerBar);
+
+ Pbindef(\scoretolights1,
+ 	\instrument, \default,
+ 	\stretch,1.33,
+ 	\legato,1,
+ 	\amp, Pseq(~a,inf)*0.5,
+	\midinote, Pseq([~midinotes.at(0)+7],inf),
+	\dur, Pseq([~durs.at(19)],inf),
+	\env, Pseq(~bar01_02Envbehave,inf),
+ 	\bus,Pseq(~bar01_02lightsbehave,inf) + ~lightsBus.index,
+ 	\finish, ~beatsToSeconds
+ ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+
+
+ Pbindef(\scoretolights2,
+ 	\instrument, \default,
+ 	\stretch,1.75,
+ 	\legato,1,
+ 	\amp, Pseq(~a,inf)*0.5,
+	\midinote, Pseq([~midinotes.at(0)],inf),
+	\dur, Pseq([~durs.at(19)],inf),
+	\env, Pseq(~bar01_02Envbehave,inf),
+ 	\bus,Pseq(~bar01_02lightsbehave,inf) + ~lightsBus.index,
+ 	\finish, ~beatsToSeconds
+ ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+
+
+
+)
+
+(
+Pbindef(\scoretolights2).play(~metro.base ,quant:~metro.base.beatsPerBar);
+Pbindef(\scoretolights1).play(~metro.base ,quant:~metro.base.beatsPerBar);
+Pbindef(\scoretolights).play(~metro.base ,quant:~metro.base.beatsPerBar);
+)
+
+(
+Pbindef(\scoretolights2).stop;
+Pbindef(\scoretolights1).stop;
+Pbindef(\scoretolights).stop;
+)
+
+(
+Pbindef(\scoretolights).stop;
+)
+
+(
+Pbindef(\scoretolights2).stop;
+
+Pbindef(\scoretolights).stop;
+)
+
+
+
+(
+Pbindef(\scoretolights2).stop;
+Pbindef(\scoretolights).play(~metro.base ,quant:~metro.base.beatsPerBar);
+)
+
+
+
+
+
+
+Pseq(
+		(1!(~midinotes.size/2))
+		++(0.5!(~midinotes.size/4))
+		++(2.75!(~midinotes.size/8))
+		++(0.75!(~midinotes.size/8))
+	,1),
+
+// deterministic metric modulation
+(
+ Pbindef(\scoretolights,
+ 	\instrument, \DcOuts,
+	\stretch, Prand([
+		Pseq((1!(~midinotes.size/2))),
+		Pseq((0.5!(~midinotes.size/4))),
+		Pseq((2.75!(~midinotes.size/8))),
+		Pseq((0.75!(~midinotes.size/8)))
+	],inf),
  	\legato,1,
  	\amp, Pseq(~a,1),
  	\midinote, Pseq(~midinotes,1),
@@ -281,7 +497,7 @@ The Main Ideas for the arrangment are:
  ).play(~metro.base ,quant:~metro.base.beatsPerBar);
 )
 
-// scramble
+// scramble SUPER GLITCHY  for ornaments
 (
  Pbindef(\scoretolights,
  	\amp, Pseq(~a.scramble,1),
@@ -309,43 +525,167 @@ var algo = 6;
 ~durs.pyramid(algo).debug("~durs.pyramid(algo) " );
 ~bar01_02lightsbehave.pyramid(algo).debug("~bar01_02lightsbehave.pyramid(algo) " );
 
-/* Pbindef(\scoretolights,
+
+Pbindef(\scoretolights,
+	\stretch, Pseq((1!(16)++
+		Prand([
+			Pseq((1!(~midinotes.size)),2),
+			Pseq((0.66!(~midinotes.size)),12),
+			Pseq((1.33!(~midinotes.size)))
+	],1)),inf),
+	\amp, Pseq(~a.pyramid(algo),1),
+	\midinote, Pseq(~midinotes.pyramid(algo),1),
+	\dur, Pseq(~durs.pyramid(algo),1),
+	\env, Pseq(~bar01_02Envbehave.pyramid(algo),1),
+	\bus,Pseq(~bar01_02lightsbehave.pyramid(algo),1) + ~lightsBus.index,
+).play(~metro.base ,quant:~metro.base.beatsPerBar);
+)
+
+
+
+
+(
+// wih 5  Kind of tutti
+// ~a.pyramid(algo): SIZE .... 3969
+var algo = 5;
+~a.pyramid(algo).debug("~a.pyramid(algo)"  );
+~midinotes.pyramid(algo).debug("~midinotes.pyramid(algo) " );
+~durs.pyramid(algo).debug("~durs.pyramid(algo) " );
+~bar01_02lightsbehave.pyramid(algo).debug("~bar01_02lightsbehave.pyramid(algo) " );
+
+ Pbindef(\scoretolights,
+	\stretch,
+	Pseq((0.33!(8))++
+	Prand([
+		Pseq((0.33!(8))),
+		Pseq((1!(8))),
+		Pseq((0.66!(16))),
+		Pseq((1.33!(8)))
+	],8),inf),
 	\amp, Pseq(~a.pyramid(algo),1),
  	\midinote, Pseq(~midinotes.pyramid(algo),1),
  	\dur, Pseq(~durs.pyramid(algo),1),
 	\env, Pseq(~bar01_02Envbehave.pyramid(algo),1),
  	\bus,Pseq(~bar01_02lightsbehave.pyramid(algo),1) + ~lightsBus.index,
- ).play(~metro.base ,quant:~metro.base.beatsPerBar);*/
+ ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+)
 
-~playMetroBase =
- Pbindef(\scoretolights,
- 	\instrument, \DcOuts,
- 	\stretch,1,
- 	\legato,1,
- 	\amp, Pseq(~a.pyramid(algo),1),
- 	\midinote, Pseq(~midinotes.pyramid(algo),1),
- 	\dur, Pseq(~durs.pyramid(algo),1),
+~sound.play
+// add tutti kind of rest in the phrase
+(
+    Pbindef(\scoretolights,
+    \instrument, \DcOuts,
+    	\legato,1,
+    	\stretch,4,
+    \bus,Pseq([(0..5)],inf) + ~lightsBus.index,
+    \amp,1,
+    \env, Pseq([
+		[Env.perc(0.01,0.09,1,-4)]
+    ],inf),
+	\dur, 1,
+    \finish, ~beatsToSeconds
+    ).play(~metro.base ,quant:~metro.base.beatsPerBar);
+)
+
+Pbindef(\tutti).stop
+Pbindef(\tutti).clear
+
+
+(
+// ~a.pyramid(algo): SIZE .... 3969
+// 10 from super caos to perodicity
+var algo = 1;
+~a.pyramid(algo).debug("~a.pyramid(algo)"  );
+~midinotes.pyramid(algo).debug("~midinotes.pyramid(algo) " );
+~durs.pyramid(algo).debug("~durs.pyramid(algo) " );
+~bar01_02lightsbehave.pyramid(algo).debug("~bar01_02lightsbehave.pyramid(algo) " );
+
+
+Pbindef(\scoretolights,
+	\stretch, Pseq((0.66!(16)++
+		Prand([
+			//Pseq((0.165!(~midinotes.size))),
+			Pseq((0.33!(~midinotes.size)),12),
+	],1)),inf),
+	\amp, Pseq(~a.pyramid(algo),1),
+	\midinote, Pseq(~midinotes.pyramid(algo),1),
+	\dur, Pseq(~durs.pyramid(algo),1),
 	\env, Pseq(~bar01_02Envbehave.pyramid(algo),1),
- 	\bus,Pseq(~bar01_02lightsbehave.pyramid(algo),1) + ~lightsBus.index,
- 	\finish, ~beatsToSeconds
- );
+	\bus,Pseq(~bar01_02lightsbehave.pyramid(algo),1) + ~lightsBus.index,
+).play(~metro.base ,quant:~metro.base.beatsPerBar);
 )
 
 (
-~playMetroBase.stop(~metro.base ,quant:~metro.base.beatsPerBar);
-~playMetroBase.play(~metro.base ,quant:~metro.base.beatsPerBar);
+// ~a.pyramid(algo): SIZE .... 3969
+// 10 from super caos to perodicity
+var algo = 10;
+~a.pyramid(algo).debug("~a.pyramid(algo)"  );
+~midinotes.pyramid(algo).debug("~midinotes.pyramid(algo) " );
+~durs.pyramid(algo).debug("~durs.pyramid(algo) " );
+~bar01_02lightsbehave.pyramid(algo).debug("~bar01_02lightsbehave.pyramid(algo) " );
+
+
+Pbindef(\scoretolights,
+	\stretch, Pseq((0.66!(16)++
+		Prand([
+			Pseq((0.125!(~midinotes.size))),
+			Pseq((0.25!(~midinotes.size)),12),
+			Pseq((0.5!(~midinotes.size)),32)
+	],1)),inf),
+	\amp, Pseq(~a.pyramid(algo),1),
+	\midinote, Pseq(~midinotes.pyramid(algo),1),
+	\dur, Pseq(~durs.pyramid(algo),1),
+	\env, Pseq(~bar01_02Envbehave.pyramid(algo),1),
+	\bus,Pseq(~bar01_02lightsbehave.pyramid(algo),1) + ~lightsBus.index,
+).play(~metro.base ,quant:~metro.base.beatsPerBar);
 )
 
 (
-var mc = 1;
-~playMetroBase.stop;
+// ~a.pyramid(algo): SIZE .... 3969
+// 9 clear fast pattern kind of "CLAVE" perodicity
+var algo = 9;
+~a.pyramid(algo).debug("~a.pyramid(algo)"  );
+~midinotes.pyramid(algo).debug("~midinotes.pyramid(algo) " );
+~durs.pyramid(algo).debug("~durs.pyramid(algo) " );
+~bar01_02lightsbehave.pyramid(algo).debug("~bar01_02lightsbehave.pyramid(algo) " );
 
-~playMetroBase.reset.play(~metro.nomes[mc] ,quant:~metro.nomes[mc].beatsPerBar);
+
+Pbindef(\scoretolights,
+	\stretch, Pseq((1!(4)++
+		Prand([
+			//Pseq((0.125!(~midinotes.size))),
+			Pseq((0.25!(~midinotes.size/8)),1),
+			Pseq((0.5!(~midinotes.size)),32)
+	],1)),inf),
+	  \instrument, \DcOuts,
+    	\legato,1,
+	\amp, Pseq(~a.pyramid(algo),1),
+	\midinote, Pseq(~midinotes.pyramid(algo),1),
+	\dur, Pseq(~durs.pyramid(algo),1),
+	\env, Pseq(~bar01_02Envbehave.pyramid(algo),1),
+	\bus,Pseq(~bar01_02lightsbehave.pyramid(algo),1) + ~lightsBus.index,
+).play(~metro.base ,quant:~metro.base.beatsPerBar);
+)
+/*
+//~metroRatios = [0.25, 0.3,0.5, 0.66, 0.75, 0.9 ,1.0, 1.25,1.33, 1.5,1.6, 1.75,2,
+3,4,5,6,7,8,9,10];
+
+	\stretch, Prand([
+		Pseq((1!(~midinotes.size)),4),
+		//Pseq((0.5!(~midinotes.size/32))),
+		//Pseq((1.75!(~midinotes.size/32))),
+		//Pseq((0.75!(~midinotes.size/8))),
+		Pseq((1.25!(~midinotes.size))),
+		//Pseq((0.33!(~midinotes.size/16))),
+		Pseq((0.66!(~midinotes.size/6))),
+		Pseq((1.33!(~midinotes.size)))
+	],inf),
+
+*/
 )
 
 
-//~metroRatios = [0.25,0.3,0.5,0.66, 0.75, 0.9 ,1.0, 1.25,1.33, 1.5,1.6, 1.75,2,3,4,5,6,7,8,9,10];
-)
+
 
 //////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////
