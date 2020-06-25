@@ -7,7 +7,7 @@ SynthDef(\bleep,{ arg out=0, freq=440, amp=1.0;
 }).add;
 
 
-// add \amp arg to DcOuts
+
 SynthDef(\DcOuts){|durSeconds=1, bus=0, amp =1 ,t|
     var env = \env.kr(Env.newClear(8).asArray);
     var sig = EnvGen.kr(env, timeScale:durSeconds, doneAction:2);
@@ -23,4 +23,10 @@ SynthDef(\ampControl){|out=0, lag=0.1| Out.kr(out, \amp.kr(0,lag))}.add;
 ~dynamics.scope;
 
 
+// Audio ,mono, no pan
+SynthDef(\DcOutsar){|durSeconds=1, out=0, amp =1 ,t|
+    var env = \env.kr(Env.newClear(8).asArray);
+    var sig = EnvGen.ar(env, timeScale:durSeconds, doneAction:2);
+    Out.ar(out, sig*amp);
+}.add;
 
