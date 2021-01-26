@@ -1,1 +1,1 @@
-SUpercollider project for lights and speakers
+Supercollider project for lights and speakers
